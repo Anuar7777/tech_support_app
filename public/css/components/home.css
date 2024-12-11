@@ -1,0 +1,34 @@
+.home {
+  margin: 40px 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home__container {
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
+  gap: 25px;
+}
+
+.home__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 30px;
+  box-shadow: 5px 5px 3px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  border: 1px solid #b4b4b4;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.home__item:hover {
+  background: #eaecee;
+  border-color: #616161;
+}
+
+.home__item > * {
+  margin-bottom: 15px;
+}

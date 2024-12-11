@@ -1,0 +1,134 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 40px 30px;
+  background-color: #fff;
+  border: 1px solid #b4b4b4;
+}
+
+.list__controls {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #000;
+  padding: 15px;
+}
+
+.list__button {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  gap: 10px;
+}
+
+.list__button > a {
+  color: #0064d9;
+  font-weight: 900;
+  padding: 10px;
+  transition: 0.4s;
+  border-radius: 8px;
+  border: 1px solid #fff;
+}
+
+.list__button > a:hover {
+  background-color: #d7ebf8;
+  border-color: #0064d9;
+}
+
+.list__button > a > i {
+  font-size: 20px;
+}
+
+.search {
+  display: flex;
+  margin-left: auto;
+  width: 60%;
+}
+
+.search input {
+  font-size: 16px;
+  border-radius: 4px 0px 0px 4px;
+  border: 1px solid #b4b4b4;
+  padding-left: 10px;
+  width: 100%;
+}
+
+.search input:focus {
+  border: 1px solid #0064d9;
+  outline: none;
+}
+
+.search input::placeholder {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.search a {
+  background-color: #0064d9;
+  color: #fff;
+  border-radius: 0px 4px 4px 0px;
+  font-size: 16px;
+  padding: 10px;
+  display: inline-block;
+  transition: 0.4s;
+}
+
+.search a:hover {
+  background-color: #0065d9df;
+}
+
+.table {
+  margin: 10px;
+}
+
+.table tr {
+  border: 1px solid #b4b4b4;
+  transition: 0.4s;
+}
+
+.table tr:not(:first-child):hover {
+  background-color: #d7ebf8;
+}
+
+.table th,
+.table td {
+  padding: 10px 5px;
+  text-align: center;
+  cursor: pointer;
+  line-height: 125%;
+  vertical-align: middle;
+}
+
+.table tr td:nth-child(2) {
+  text-align: left;
+}
+
+.table__title {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.table__title > th {
+  border: 1px solid #b4b4b4;
+  transition: 0.4s;
+}
+
+.table__title > th:hover {
+  background-color: #d7ebf8;
+}
+
+.table td {
+  font-size: 12px;
+}
+
+.table__checkbox {
+  transform: scale(1.2);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.table__checkbox:hover {
+  border-color: #0064d9;
+}

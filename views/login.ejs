@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body
+    style="
+      background-color: #0064d9;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+    "
+  >
+    <form action="/auth/login" method="post" class="authForm">
+      <legend>Авторизация</legend>
+      <input type="email" placeholder="Email" name="email" />
+      <input type="password" placeholder="Пароль" name="password" />
+      <button type="submit">Войти</button>
+      <a href="/register">Нету аккаунта? Регистрация</a>
+    </form>
+  </body>
+</html>

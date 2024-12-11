@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/header') %>
+    <section class="list">
+      <div class="list__controls">
+        <h3>Ответы (15)</h3>
+        <form class="search">
+          <input type="text" name="search" placeholder="Поиск" />
+          <a href="">Найти</a>
+        </form>
+        <div class="list__button">
+          <a href="">Создать</a>
+          <a href="">Удалить</a>
+          <a href=""><i class="fa-solid fa-file-arrow-down"></i></a>
+        </div>
+      </div>
+      <table class="table">
+        <tr class="table__title">
+          <th><input type="checkbox" class="table__checkbox" /></th>
+          <th>Ответы</th>
+          <th>Изменено</th>
+          <th>Дата изменения</th>
+          <th>Создано</th>
+          <th>Дата создания</th>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="table__checkbox" /></td>
+          <td>Ответ: Решения по инцидентам смотрите в системе SOP.</td>
+          <td>aman_anuar@mail.ru</td>
+          <td>18 нояб. 2024 г.</td>
+          <td>aman_anuar@mail.ru</td>
+          <td>17 нояб. 2024 г.</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="table__checkbox" /></td>
+          <td>Ответ: Решения по инцидентам смотрите в системе SOP.</td>
+          <td>aman_anuar@mail.ru</td>
+          <td>18 нояб. 2024 г.</td>
+          <td>aman_anuar@mail.ru</td>
+          <td>17 нояб. 2024 г.</td>
+        </tr>
+      </table>
+    </section>
+    <%- include('partials/script') %>
+  </body>
+</html>

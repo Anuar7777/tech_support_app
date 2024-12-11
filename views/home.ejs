@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/header') %>
+    <section class="home">
+      <h3>Моя начальная страница</h3>
+      <div class="home__container">
+        <div class="home__item" onclick="redirectToPage('/answers', true)">
+          <img src="image/home_item_answers.png" alt="faq" />
+          <h4>Ответы</h4>
+          <p>Работа с ответами</p>
+        </div>
+        <div class="home__item" onclick="redirectToPage('/questions', true)">
+          <img src="image/home_item_questions.png" alt="faq" />
+          <h4>Вопросы</h4>
+          <p>Работа с вопросами</p>
+        </div>
+        <div
+          class="home__item"
+          onclick="redirectToPage('https://t.me/TradeEasyKZBot', true)"
+        >
+          <img src="image/home_item_bot.png" alt="bot" />
+          <h4>Чат бот</h4>
+          <p>Работа с чат ботом</p>
+        </div>
+      </div>
+    </section>
+
+    <%- include('partials/script') %>
+  </body>
+</html>

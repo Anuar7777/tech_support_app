@@ -1,0 +1,61 @@
+@import url(vendor/reset.css);
+@import url(components/header.css);
+@import url(components/home.css);
+@import url(components/list.css);
+@import url(components/authForm.css);
+
+@font-face {
+  font-family: "Montserrat-Regular";
+  src: url(../font/Montserrat/static/Montserrat-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Montserrat-Medium";
+  src: url(../font/Montserrat/static/Montserrat-Medium.ttf);
+}
+
+@font-face {
+  font-family: "Montserrat-Bold";
+  src: url(../font/Montserrat/static/Montserrat-Bold.ttf);
+}
+
+body {
+  background-color: #f5f6f7;
+}
+
+a,
+span,
+input,
+p,
+th,
+td {
+  font-family: "Montserrat-Medium";
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Montserrat-Bold";
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+p {
+  font-size: 16px;
+}
