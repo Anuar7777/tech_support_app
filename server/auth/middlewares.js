@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "my_secret_key";
 
-const authenticateJWT = (req, res, next) => {
-  const token = req.get("Authorization")?.replace("Bearer ", "");
+const isAuth = (req, res, next) => {
+  const token = req.cookies.token;
   if (!token) {
     return res.redirect("/login");
   }
@@ -13,8 +13,10 @@ const authenticateJWT = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(403).json({ message: "Неверный или истекший токен." });
+    console.error("Ошибка проверки токена:", error.message);
+    res.clearCookie("token");
+    return res.redirect("/login");
   }
 };
 
-module.exports = { authenticateJWT };
+module.exports = { isAuth };

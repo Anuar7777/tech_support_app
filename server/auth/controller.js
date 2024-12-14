@@ -39,20 +39,20 @@ const registration = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Такого пользователя не существует" });
+      req.session.error = "Неверный email или пароль.";
+      return res.redirect("/login");
     }
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
-      return res.status(400).json({ message: "Неверный email или пароль." });
+      req.session.error = "Неверный email или пароль.";
+      return res.redirect("/login");
     }
 
     const token = jwt.sign(
@@ -61,12 +61,16 @@ const login = async (req, res) => {
       { expiresIn: "2h" }
     );
 
-    res.status(200).json({ message: "Успешная авторизация.", token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 2 * 60 * 60 * 1000,
+    });
+
+    res.redirect("/");
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Ошибка авторизации", error: error.message });
+    req.session.error = "Ошибка авторизации.";
+    res.redirect("/login");
   }
 };
 
-module.exports = { registration, login };
+module.exports = { registration, signIn };

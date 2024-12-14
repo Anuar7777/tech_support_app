@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true, 
+        unique: true,
       },
       password_hash: {
         type: DataTypes.STRING,
@@ -34,11 +34,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "support",
       },
+      isValidate: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
       modelName: "User",
-      tableName: "users", 
+      tableName: "users",
     }
   );
 

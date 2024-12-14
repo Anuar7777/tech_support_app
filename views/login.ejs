@@ -9,8 +9,13 @@
       align-items: center;
     "
   >
-    <form action="/auth/login" method="post" class="authForm">
+    <form action="/auth/signIn" method="post" class="authForm">
       <legend>Авторизация</legend>
+
+      <% if(error) { %>
+      <p style="color: red"><%= error %></p>
+      <% } %>
+
       <input type="email" placeholder="Email" name="email" />
       <input type="password" placeholder="Пароль" name="password" />
       <button type="submit">Войти</button>

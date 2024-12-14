@@ -1,10 +1,11 @@
 const express = require("express");
-const { authenticateJWT } = require("../auth/middlewares");
+const { isAuth } = require("../auth/middlewares");
 const router = express.Router();
 
 // Страница профиля
-router.get("/", authenticateJWT, (req, res) => {
-  res.render("home", { pageTitle: "Начальная страница" });
+router.get("/", isAuth, (req, res) => {
+  const token = req.cookies.token || null;
+  res.render("home", { pageTitle: "Начальная страница", token });
 });
 
 // Страница регистрации
@@ -14,31 +15,33 @@ router.get("/register", (req, res) => {
 
 // Страница авторизации
 router.get("/login", (req, res) => {
-  res.render("login", { pageTitle: "Авторизация" });
+  const error = req.session.error || null;
+  delete req.session.error;
+  res.render("login", { pageTitle: "Авторизация", error });
 });
 
 // Страница вопросов (List)
-router.get("/questions", authenticateJWT, (req, res) => {
+router.get("/questions", isAuth, (req, res) => {
   res.render("questions-list", { pageTitle: "Таблица Вопросов" });
 });
 
 // Страница вопроса (Object)
-router.get("/question/:id", authenticateJWT, (req, res) => {
+router.get("/question/:id", isAuth, (req, res) => {
   res.render("question-object", { id: req.params.id });
 });
 
 // Страница ответов (List)
-router.get("/answers", authenticateJWT, (req, res) => {
+router.get("/answers", isAuth, (req, res) => {
   res.render("answers-list", { pageTitle: "Таблица Ответов" });
 });
 
 // Страница ответа (Object)
-router.get("/answer/:id", authenticateJWT, (req, res) => {
+router.get("/answer/:id", isAuth, (req, res) => {
   res.render("answer-object", { id: req.params.id });
 });
 
 // Страница профиля
-router.get("/profile", authenticateJWT, (req, res) => {
+router.get("/profile", isAuth, (req, res) => {
   res.render("profile");
 });
 
