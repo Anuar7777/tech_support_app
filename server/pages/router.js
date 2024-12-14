@@ -10,7 +10,9 @@ router.get("/", isAuth, (req, res) => {
 
 // Страница регистрации
 router.get("/register", (req, res) => {
-  res.render("register", { pageTitle: "Регистрация" });
+  const error = req.cookies.error || null;
+  res.clearCookie("error");
+  res.render("register", { pageTitle: "Регистрация", error });
 });
 
 // Страница авторизации

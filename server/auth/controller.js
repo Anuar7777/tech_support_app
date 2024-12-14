@@ -4,15 +4,17 @@ const { User } = require("./../../models");
 
 const JWT_SECRET = process.env.JWT_SECRET || "my_secret_key";
 
-const registration = async (req, res) => {
+const signUp = async (req, res) => {
   try {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "Пользователь с таким email уже существует." });
+      res.cookie("error", "Пользователь с таким email уже существует.", {
+        httpOnly: true,
+        maxAge: 10 * 60 * 1000,
+      });
+      return res.redirect("/register");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,14 +30,19 @@ const registration = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res
-      .status(201)
-      .json({ message: "Пользователь успешно зарегистрирован.", token });
-  } catch (error) {
-    res.status(500).json({
-      message: "Ошибка регистрации пользователя.",
-      error: error.message,
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 2 * 60 * 60 * 1000,
     });
+
+    res.redirect("/");
+  } catch (error) {
+    res.cookie("error", "Ошибка регистрации", {
+      httpOnly: true,
+      maxAge: 10 * 60 * 1000,
+    });
+    console.log(error.message);
+    res.redirect("/register");
   }
 };
 
@@ -83,4 +90,9 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = { registration, signIn };
+const signOut = (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/login");
+};
+
+module.exports = { signUp, signIn, signOut };
