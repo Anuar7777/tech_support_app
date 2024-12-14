@@ -4,22 +4,19 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Answer extends Model {
     static associate(models) {
-      // Определяем ассоциации с другими моделями
-      // Один пользователь может создать много ответов
       this.belongsTo(models.User, {
-        foreignKey: "created_by", // связь с пользователем, который создал
-        as: "creator", // псевдоним для ассоциации
+        foreignKey: "created_by",
+        as: "creator", 
       });
 
       this.belongsTo(models.User, {
-        foreignKey: "modified_by", // связь с пользователем, который изменил
-        as: "modifier", // псевдоним для ассоциации
+        foreignKey: "modified_by", 
+        as: "modifier", 
       });
 
-      // Один ответ может иметь много вопросов
       this.hasMany(models.Question, {
-        foreignKey: "answer_id", // связь с вопросами, связанными с ответом
-        as: "questions", // псевдоним для ассоциации
+        foreignKey: "answer_id", 
+        as: "questions", 
       });
     }
   }
@@ -37,23 +34,23 @@ module.exports = (sequelize, DataTypes) => {
       },
       created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // по умолчанию текущая дата
+        defaultValue: DataTypes.NOW,
       },
       created_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", // связь с таблицей Users
+          model: "Users", 
           key: "user_id",
         },
       },
       modified_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // по умолчанию текущая дата
+        defaultValue: DataTypes.NOW, 
       },
       modified_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", // связь с таблицей Users
+          model: "Users", 
           key: "user_id",
         },
       },
@@ -61,8 +58,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Answer",
-      tableName: "answers", // имя таблицы в базе данных
-      timestamps: false, // если хотите вручную управлять полями created_at и modified_at
+      tableName: "answers", 
+      timestamps: false, 
     }
   );
 

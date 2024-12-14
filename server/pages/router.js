@@ -15,8 +15,8 @@ router.get("/register", (req, res) => {
 
 // Страница авторизации
 router.get("/login", (req, res) => {
-  const error = req.session.error || null;
-  delete req.session.error;
+  const error = req.cookies.error || null;
+  res.clearCookie("error");
   res.render("login", { pageTitle: "Авторизация", error });
 });
 

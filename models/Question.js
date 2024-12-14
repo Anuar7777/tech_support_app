@@ -4,23 +4,20 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Question extends Model {
     static associate(models) {
-      // Связь с моделью Answer, внешний ключ на ответ
       this.belongsTo(models.Answer, {
-        foreignKey: "answer_id", // внешний ключ для связи с таблицей Answers
-        as: "answer", // псевдоним для ассоциации
-        onDelete: "CASCADE", // каскадное удаление
+        foreignKey: "answer_id", 
+        as: "answer", 
+        onDelete: "CASCADE", 
       });
 
-      // Связь с пользователем, который создал вопрос
       this.belongsTo(models.User, {
-        foreignKey: "created_by", // внешний ключ для связи с таблицей Users
-        as: "creator", // псевдоним для ассоциации
+        foreignKey: "created_by", 
+        as: "creator", 
       });
 
-      // Связь с пользователем, который изменил вопрос
       this.belongsTo(models.User, {
-        foreignKey: "modified_by", // внешний ключ для связи с таблицей Users
-        as: "modifier", // псевдоним для ассоциации
+        foreignKey: "modified_by", 
+        as: "modifier", 
       });
     }
   }
@@ -30,44 +27,44 @@ module.exports = (sequelize, DataTypes) => {
       question_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true, // автоматически увеличиваем идентификатор
+        autoIncrement: true, 
       },
       question: {
         type: DataTypes.STRING,
-        allowNull: false, // обязательное поле
+        allowNull: false, 
       },
       question_vector: {
-        type: DataTypes.ARRAY(DataTypes.FLOAT), // Векторный тип данных
-        allowNull: false, // обязательное поле
+        type: DataTypes.ARRAY(DataTypes.FLOAT), 
+        allowNull: false, 
       },
       created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // по умолчанию текущая дата
+        defaultValue: DataTypes.NOW, 
       },
       created_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", // связь с таблицей Users
-          key: "user_id", // внешний ключ ссылается на поле user_id в таблице Users
+          model: "Users", 
+          key: "user_id", 
         },
       },
       modified_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, // по умолчанию текущая дата
+        defaultValue: DataTypes.NOW, 
       },
       modified_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", // связь с таблицей Users
-          key: "user_id", // внешний ключ ссылается на поле user_id в таблице Users
+          model: "Users", 
+          key: "user_id", 
         },
       },
     },
     {
       sequelize,
-      modelName: "Question", // имя модели
-      tableName: "questions", // имя таблицы в базе данных
-      timestamps: false, // если хотите управлять полями вручную
+      modelName: "Question", 
+      tableName: "questions",
+      timestamps: false, 
     }
   );
 

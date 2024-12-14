@@ -45,13 +45,19 @@ const signIn = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      req.session.error = "Неверный email или пароль.";
+      res.cookie("error", "Неверный email или пароль", {
+        httpOnly: true,
+        maxAge: 10 * 60 * 1000,
+      });
       return res.redirect("/login");
     }
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
-      req.session.error = "Неверный email или пароль.";
+      res.cookie("error", "Неверный email или пароль", {
+        httpOnly: true,
+        maxAge: 10 * 60 * 1000,
+      });
       return res.redirect("/login");
     }
 
@@ -68,7 +74,11 @@ const signIn = async (req, res) => {
 
     res.redirect("/");
   } catch (error) {
-    req.session.error = "Ошибка авторизации.";
+    res.cookie("error", "Ошибка авторизации.", {
+      httpOnly: true,
+      maxAge: 10 * 60 * 1000,
+    });
+    console.log(error.message);
     res.redirect("/login");
   }
 };
