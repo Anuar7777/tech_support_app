@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(require("./server/pages/router"));
-app.use("/auth", require("./server/auth/router"));
+app.use("/api", require("./server/auth/router"));
 
 const port = 3000;
 

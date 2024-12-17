@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       answer: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       created_at: {

@@ -5,19 +5,19 @@ module.exports = (sequelize, DataTypes) => {
   class Question extends Model {
     static associate(models) {
       this.belongsTo(models.Answer, {
-        foreignKey: "answer_id", 
-        as: "answer", 
-        onDelete: "CASCADE", 
+        foreignKey: "answer_id",
+        as: "answer",
+        onDelete: "CASCADE",
       });
 
       this.belongsTo(models.User, {
-        foreignKey: "created_by", 
-        as: "creator", 
+        foreignKey: "created_by",
+        as: "creator",
       });
 
       this.belongsTo(models.User, {
-        foreignKey: "modified_by", 
-        as: "modifier", 
+        foreignKey: "modified_by",
+        as: "modifier",
       });
     }
   }
@@ -27,44 +27,52 @@ module.exports = (sequelize, DataTypes) => {
       question_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true, 
+        autoIncrement: true,
       },
       question: {
         type: DataTypes.STRING,
-        allowNull: false, 
+        allowNull: false,
       },
       question_vector: {
-        type: DataTypes.ARRAY(DataTypes.FLOAT), 
-        allowNull: false, 
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
+        allowNull: false,
+      },
+      answer_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Answers",
+          key: "answer_id",
+        },
       },
       created_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, 
+        defaultValue: DataTypes.NOW,
       },
       created_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", 
-          key: "user_id", 
+          model: "Users",
+          key: "user_id",
         },
       },
       modified_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, 
+        defaultValue: DataTypes.NOW,
       },
       modified_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", 
-          key: "user_id", 
+          model: "Users",
+          key: "user_id",
         },
       },
     },
     {
       sequelize,
-      modelName: "Question", 
+      modelName: "Question",
       tableName: "questions",
-      timestamps: false, 
+      timestamps: false,
     }
   );
 

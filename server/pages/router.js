@@ -44,7 +44,7 @@ router.get("/answer/:id", isAuth, (req, res) => {
 
 // Страница профиля
 router.get("/profile", isAuth, (req, res) => {
-  res.render("profile");
+  res.render("profile", { pageTitle: "Мой Профиль" });
 });
 
 module.exports = router;

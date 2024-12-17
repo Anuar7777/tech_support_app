@@ -46,7 +46,7 @@ module.exports = {
         autoIncrement: true,
       },
       answer: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       created_at: {

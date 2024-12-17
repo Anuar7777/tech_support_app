@@ -6,5 +6,15 @@
     onclick="redirectToPage('/')"
   />
   <p class="header__title"><%= pageTitle %></p>
-  <img class="header__profile" src="image/profile.png" alt="profile" />
+  <img
+    class="header__profile"
+    src="image/profile.png"
+    alt="profile"
+    onclick="toggleModal()"
+  />
+  <div class="header__modal">
+    <a href="/">Support Service</a>
+    <a href="/profile">Мой Профиль</a>
+    <a href="/api/signOut">Выход</a>
+  </div>
 </header>
