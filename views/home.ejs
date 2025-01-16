@@ -6,16 +6,39 @@
     <section class="home">
       <h3>Моя начальная страница</h3>
       <div class="home__container">
-        <div class="home__item" onclick="redirectToPage('/answers', true)">
+        <% if (user.isValidate) { %>
+        <div
+          class="home__item"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/answers"
+          onclick="redirectToPage('/answers')"
+        >
           <img src="image/home_item_answers.png" alt="faq" />
           <h4>Ответы</h4>
           <p>Работа с ответами</p>
         </div>
-        <div class="home__item" onclick="redirectToPage('/questions', true)">
+        <div
+          class="home__item"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/questions"
+          onclick="redirectToPage('/questions')"
+        >
           <img src="image/home_item_questions.png" alt="faq" />
           <h4>Вопросы</h4>
           <p>Работа с вопросами</p>
         </div>
+        <% } %> <% if (user.role === "admin") { %>
+        <div
+          class="home__item"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/users"
+          onclick="redirectToPage('/users')"
+        >
+          <img src="image/home_item_users.png" alt="users" /> 
+          <h4>Пользователи</h4>
+          <p>Работа с доступом</p>
+        </div>
+        <% } %>
         <div
           class="home__item"
           onclick="redirectToPage('https://t.me/TradeEasyKZBot', true)"
@@ -26,6 +49,6 @@
         </div>
       </div>
     </section>
-    <%- include('partials/script') %>
+    <%- include('partials/context-menu') %> <%- include('partials/script') %>
   </body>
 </html>

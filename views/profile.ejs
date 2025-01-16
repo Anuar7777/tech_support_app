@@ -2,6 +2,103 @@
 <html lang="en">
   <%- include('partials/head') %>
   <body>
-    <%- include('partials/header') %> <%- include('partials/script') %>
+    <%- include('partials/header') %> <% if (success) {%>
+    <div
+      style="
+        width: calc(100% - 60px);
+        background-color: #18c713;
+        padding: 15px 30px;
+      "
+    >
+      <p style="color: #fff; font-weight: bold; user-select: none">
+        <%= success %>
+      </p>
+    </div>
+
+    <% } %>
+    <section class="profile">
+      <h3>Личная Информация</h3>
+      <div class="profile__info">
+        <div class="profile__card">
+          <p><span>Email:</span> <%= user.email %></p>
+          <p><span>Роль:</span> <%= user.role %></p>
+          <p>
+            <span>Дата регистрации:</span> <%= new
+            Date(user.createdAt).toLocaleDateString('ru-RU', { day: 'numeric',
+            month: 'short', year: 'numeric' }) %>
+          </p>
+          <p>
+            <span>Статус аккаунта:</span> <%= user.isValidate ? "активный" :
+            "заблокирован" %>
+          </p>
+        </div>
+        <div class="profile__card">
+          <p><span>Создано вопросов:</span> <%= created_question_count %></p>
+          <p><span>Создано ответов:</span> <%= created_answer_count %></p>
+          <p><span>Изменено вопросов:</span> <%= updated_question_count %></p>
+          <p><span>Изменено ответов:</span> <%= updated_answer_count %></p>
+        </div>
+      </div>
+      <div class="profile__controls">
+        <a onclick="showModal(changePassword_modal)">Сменить пароль</a>
+        <a onclick="showModal(deleteUser_modal)">Удалить аккаунт</a>
+      </div>
+      <div
+        id="deleteUser_modal"
+        class="modal__window"
+        onclick="hideModal(deleteUser_modal)"
+      >
+        <div class="modal__content" onclick="event.stopPropagation()">
+          <h3>Вы точно хотите удалить свой аккаунт?</h3>
+          <div class="modal__controls">
+            <a class="modal__button" onclick="deleteUser()">Да</a>
+            <a class="modal__button" onclick="hideModal(deleteUser_modal)"
+              >Нет</a
+            >
+          </div>
+        </div>
+      </div>
+      <div
+        id="changePassword_modal"
+        class="modal__window"
+        onclick="hideModal(changePassword_modal)"
+      >
+        <div class="modal__content" onclick="event.stopPropagation()">
+          <form action="/api/changePassword" method="POST" class="modal__form">
+            <i
+              class="fa-solid fa-xmark"
+              onclick="hideModal(changePassword_modal)"
+            ></i>
+            <legend>Сменить пароль</legend>
+
+            <input
+              type="password"
+              placeholder="Введите новый пароль"
+              name="new_password_1"
+            />
+            <input
+              type="password"
+              placeholder="Повторите новый пароль"
+              name="new_password_2"
+            />
+            <% if (error) { %>
+            <p style="color: red; font-size: 16px; margin-bottom: 20px">
+              <%= error %>
+            </p>
+            <% } %>
+            <button type="submit" class="modal__button">Сохранить</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <%- include('partials/script') %>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+      if (error) {
+        showModal(changePassword_modal);
+      }
+    </script>
   </body>
 </html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("partials/head") %>
+  <body>
+    <%- include("partials/header") %>
+    <section class="object">
+      <h3>Общая Информация</h3>
+
+      <div class="object__container">
+        <% if(type == "answer") { %>
+        <form
+          class="object__item"
+          method="post"
+          action="<%= !edit_mode ? '/api/answer/new' : '/api/answer/edit/' + answer.answer_id %>"
+        >
+          <h4>Ответ:</h4>
+          <textarea
+            name="answer"
+            placeholder="Введите текст..."
+            cols="100"
+            rows="10"
+          >
+<%= edit_mode ? answer.answer : "" %></textarea
+          >
+          <div class="object__controls">
+            <% if (error) { %>
+            <p style="color: red"><%= error %></p>
+            <% } %>
+            <button type="submit" class="button">Сохранить</button>
+            <a
+              href="<%= edit_mode ? '/answer/' + answer.answer_id : '/answers'%>"
+              class="button"
+              >Назад</a
+            >
+          </div>
+        </form>
+        <% } else if (type == "question") { %>
+        <form class="object__item" method="post" action="/api/question/new">
+          <h4>Ответ:</h4>
+
+          <h4>Вопрос:</h4>
+          <textarea
+            name="question"
+            placeholder="Введите текст..."
+            cols="100"
+            rows="10"
+          ><%= edit_mode ? question.question : ""%></textarea>
+          <div class="object__controls">
+            <% if (error) { %>
+            <p style="color: red"><%= error %></p>
+            <% } %>
+            <button type="submit" class="button">Сохранить</button>
+            <a href="/questions" class="button">Назад</a>
+          </div>
+        </form>
+        <% } %>
+      </div>
+    </section>
+
+    <%- include('partials/script') %>
+  </body>
+</html>

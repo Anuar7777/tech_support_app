@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/header')%>
+    <section class="object">
+      <div class="object__title">
+        <h3>Общая Информация</h3>
+        <a href="/edit/answer/<%= answer.answer_id %>"
+          ><i class="fa-solid fa-pen"></i
+        ></a>
+        <a onclick="deleteLogic('<%= answer.answer_id %>', 'answer')"
+          ><i class="fa-solid fa-trash"></i
+        ></a>
+      </div>
+
+      <div class="object__container">
+        <div class="object__item">
+          <h4>Создано: <span><%= answer.creator.email%></span></h4>
+          <h4>Изменено: <span><%= answer.modifier.email%></span></h4>
+        </div>
+        <div class="object__item">
+          <h4>
+            Дата создания:
+            <span>
+              <%= new Date(answer.created_at).toLocaleDateString('ru-RU', { day:
+              'numeric', month: 'short', year: 'numeric' }) %></span
+            >
+          </h4>
+          <h4>
+            Дата изменения:
+            <span>
+              <%= new Date(answer.modified_at).toLocaleDateString('ru-RU', {
+              day: 'numeric', month: 'short', year: 'numeric' }) %></span
+            >
+          </h4>
+        </div>
+      </div>
+      <h4>Ответ: <span><%= answer.answer %></span></h4>
+    </section>
+    <% if(questions.length > 0) { %>
+    <section class="object__table">
+      <table class="table">
+        <tr class="table__title">
+          <th>Вопрос</th>
+          <th>Изменено</th>
+          <th>Дата изменения</th>
+          <th>Создано</th>
+          <th>Дата создания</th>
+        </tr>
+        <% questions.forEach(question => { %>
+        <tr
+          onclick="redirectToPage('/question/<%= question.question_id%>')"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/question/<%= question.question_id%>"
+        >
+          <td class="table__content"><%= question.question %></td>
+          <td><%= question.modifier.email %></td>
+          <td class="table__date">
+            <%= new Date(question.modified_at).toLocaleDateString('ru-RU', {
+            day: 'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
+          <td><%= question.creator.email %></td>
+          <td class="table__date">
+            <%= new Date(question.created_at).toLocaleDateString('ru-RU', { day:
+            'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
+        </tr>
+        <% }) %>
+      </table>
+    </section>
+    <% } %> <%- include('partials/context-menu') %> <%-
+    include('partials/script') %>
+  </body>
+</html>

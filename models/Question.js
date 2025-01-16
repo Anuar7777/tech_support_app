@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       question: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       question_vector: {

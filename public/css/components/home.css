@@ -6,7 +6,6 @@
 
 .home__container {
   display: flex;
-  align-items: center;
   margin-top: 25px;
   gap: 25px;
 }
@@ -22,6 +21,7 @@
   border: 1px solid #b4b4b4;
   cursor: pointer;
   transition: 0.3s;
+  width: 15%;
 }
 
 .home__item:hover {

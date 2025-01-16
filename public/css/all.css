@@ -3,6 +3,9 @@
 @import url(components/home.css);
 @import url(components/list.css);
 @import url(components/authForm.css);
+@import url(components/profile.css);
+@import url(components/object.css);
+@import url(components/error.css);
 
 @font-face {
   font-family: "Montserrat-Regular";
@@ -28,7 +31,8 @@ span,
 input,
 p,
 th,
-td {
+td,
+button {
   font-family: "Montserrat-Medium";
   text-decoration: none;
 }
@@ -38,6 +42,7 @@ h2,
 h3,
 h4 {
   font-family: "Montserrat-Bold";
+  line-height: 125%;
 }
 
 h1 {
@@ -58,4 +63,246 @@ h4 {
 
 p {
   font-size: 16px;
+}
+
+.button {
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: #0064d9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  padding: 10px 0px;
+  width: 140px;
+  cursor: pointer;
+  transition: 0.4s;
+  border: none;
+}
+
+.button:hover {
+  background-color: #002b5d;
+}
+
+/* modal window */
+.modal__window {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal__content {
+  background-color: #fff;
+  position: relative;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 40%;
+  padding: 30px 0px;
+}
+.modal__controls {
+  display: flex;
+  gap: 30px;
+  margin-top: 35px;
+}
+.modal__button {
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: #0064d9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  padding: 10px;
+  width: 140px;
+  cursor: pointer;
+  transition: 0.4s;
+  border: none;
+}
+
+.modal__button:nth-child(1) {
+  background-color: red;
+}
+.modal__button:nth-child(1):hover {
+  background-color: rgb(91, 1, 1);
+}
+
+.modal__button:hover {
+  background-color: #002b5d;
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.modal__form legend {
+  text-align: center;
+  font-size: 28px;
+  font-family: "Montserrat-Bold";
+  color: #0064d9;
+  margin-bottom: 30px;
+}
+.modal__form i {
+  font-size: 40px;
+  color: #0064d9;
+  cursor: pointer;
+  transition: 0.4s;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.modal__form i:hover {
+  color: #002b5d;
+}
+.modal__form input {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: #dbdbdb;
+  border: none;
+  font-family: "Montserrat-Medium";
+  font-size: 20px;
+  margin-bottom: 20px;
+  outline: none;
+  width: 75%;
+}
+.modal__form input:focus-visible {
+  border-color: #0064d9;
+}
+.modal__form input::placeholder {
+  color: #939393;
+}
+
+/* context menu */
+.context__link {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: block;
+  color: #0064d9;
+  font-size: 14px;
+}
+
+.context__link:hover {
+  background-color: #eaecee;
+  color: #002b5d;
+}
+
+.context__link--hidden {
+  display: none;
+}
+
+/* search */
+.search {
+  display: flex;
+  margin-left: auto;
+  width: 60%;
+}
+
+.search input {
+  font-size: 16px;
+  border-radius: 4px 0px 0px 4px;
+  border: 1px solid #b4b4b4;
+  padding-left: 10px;
+  width: 100%;
+}
+
+.search input:focus {
+  border: 1px solid #0064d9;
+  outline: none;
+}
+
+.search input::placeholder {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.search button {
+  background-color: #0064d9;
+  color: #fff;
+  border-radius: 0px 4px 4px 0px;
+  font-size: 16px;
+  padding: 10px;
+  display: inline-block;
+  transition: 0.4s;
+  border: none;
+  cursor: pointer;
+  font-family: "Montserrat-Medium";
+}
+
+.search button:hover {
+  background-color: #0065d9df;
+}
+
+/* table */
+.table {
+  margin: 10px auto;
+  background-color: #fff;
+  width: 98%;
+}
+
+.table tr {
+  border: 1px solid #b4b4b4;
+  transition: 0.4s;
+}
+
+.table tr:not(:first-child):hover {
+  background-color: #d7ebf8;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  line-height: 140%;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid #b4b4b4;
+}
+
+.table__date {
+  min-width: 100px;
+}
+
+.table__title {
+  font-size: 14px;
+  font-weight: 900;
+  transition: 0.4s;
+}
+
+.table__title:hover {
+  background-color: #d7ebf8;
+}
+
+.table__title--selected {
+  background-color: #d7ebf8;
+}
+
+.table td {
+  font-size: 12px;
+}
+
+.table .table__content {
+  text-align: left;
+  word-break: break-word;
+  min-width: 200px;
 }

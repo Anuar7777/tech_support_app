@@ -5,53 +5,88 @@
     <%- include('partials/header') %>
     <section class="list">
       <div class="list__controls">
-        <h3>Вопросы (2)</h3>
-        <form class="search">
-          <input type="text" name="search" placeholder="Поиск" />
-          <a href="">Найти</a>
+        <h3>Вопросы (<%= questions.length %>)</h3>
+        <form class="search" method="get" action="/questions">
+          <input
+            type="text"
+            name="search"
+            placeholder="Поиск"
+            value="<%= typeof search !== 'undefined' ? search : '' %>"
+          />
+          <button type="submit">Найти</button>
         </form>
         <div class="list__button">
-          <a href="">Создать</a>
-          <a href="">Удалить</a>
-          <a href=""><i class="fa-solid fa-file-arrow-down"></i></a>
+          <a href="/new/question"
+            ><i class="fa-solid fa-file-circle-plus"></i
+          ></a>
+          <a href="/api/export/questions?search=<%= search %>">
+            <i class="fa-solid fa-file-arrow-down"></i>
+          </a>
         </div>
       </div>
       <table class="table">
-        <tr class="table__title">
-          <th><input type="checkbox" class="table__checkbox" /></th>
-          <th>Вопросы</th>
-          <th>Изменено</th>
-          <th>Дата изменения</th>
-          <th>Создано</th>
-          <th>Дата создания</th>
-        </tr>
         <tr>
-          <td><input type="checkbox" class="table__checkbox" /></td>
-          <td>
-            Вопрос: Решения по инцидентам смотрите в системе SOP.Вопрос: Решения
-            по инцидентам смотрите в системе SOP.Вопрос: Решения по инцидентам
-            смотрите в системе SOP.Вопрос: Решения по инцидентам смотрите в
-            системе SOP.Вопрос: Решения по инцидентам смотрите в системе
-            SOP.Вопрос: Решения по инцидентам смотрите в системе SOP.Вопрос:
-            Решения по инцидентам смотрите в системе SOP.Вопрос: Решения по
-            инцидентам смотрите в системе SOP.Вопрос: Решения по инцидентам
-            смотрите в системе SOP.
+          <th
+            class="table__title <%= sortBy === `question` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/questions?search=<%= search %>&sortBy=question&order=<%= (sortBy === 'question' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Вопрос
+          </th>
+          <th
+            class="table__title <%= sortBy === `answer` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/questions?search=<%= search %>&sortBy=answer&order=<%= (sortBy === 'answer' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Ответ
+          </th>
+          <th
+            class="table__title <%= sortBy === `modifier.email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/questions?search=<%= search %>&sortBy=modifier.email&order=<%= (sortBy === 'modifier.email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Изменено
+          </th>
+          <th
+            class="table__title <%= sortBy === `modified_at` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/questions?search=<%= search %>&sortBy=modified_at&order=<%= (sortBy === 'modified_at' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Дата изменения
+          </th>
+          <th
+            class="table__title <%= sortBy === `creator.email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/questions?search=<%= search %>&sortBy=creator.email&order=<%= (sortBy === 'creator.email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Создано
+          </th>
+          <th
+            class="table__title <%= sortBy === `created_at` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/questions?search=<%= search %>&sortBy=created_at&order=<%= (sortBy === 'created_at' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Дата создания
+          </th>
+        </tr>
+        <% questions.forEach( question => { %>
+        <tr
+          onclick="redirectToPage('/question/<%= question.question_id%>')"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/question/<%= question.question_id%>"
+        >
+          <td class="table__content"><%= question.question %></td>
+          <td class="table__content"><%= question.answer.answer %></td>
+
+          <td><%= question.modifier.email %></td>
+          <td class="table__date">
+            <%= new Date(question.modified_at).toLocaleDateString('ru-RU', {
+            day: 'numeric', month: 'short', year: 'numeric' }) %>
           </td>
-          <td>aman_anuar@mail.ru</td>
-          <td>18 нояб. 2024 г.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>17 нояб. 2024 г.</td>
+          <td><%= question.creator.email %></td>
+          <td class="table__date">
+            <%= new Date(question.created_at).toLocaleDateString('ru-RU', { day:
+            'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
         </tr>
-        <tr>
-          <td><input type="checkbox" class="table__checkbox" /></td>
-          <td>Вопрос: Решения по инцидентам смотрите в системе SOP.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>18 нояб. 2024 г.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>17 нояб. 2024 г.</td>
-        </tr>
+
+        <% }) %>
       </table>
     </section>
-    <%- include('partials/script') %>
+    <%- include('partials/context-menu') %> <%- include('partials/script') %>
   </body>
 </html>

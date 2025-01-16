@@ -81,7 +81,7 @@ module.exports = {
         autoIncrement: true,
       },
       question: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       question_vector: {

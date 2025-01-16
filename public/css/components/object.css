@@ -1,0 +1,80 @@
+.object {
+  margin: 40px 30px;
+}
+
+.object span {
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.object__title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.object__title a {
+  color: #0064d9;
+  transition: 0.4s;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.object__title a:hover {
+  color: #002b5d;
+}
+
+.object__container {
+  margin: 25px 0px 20px;
+  display: flex;
+  gap: 50px;
+}
+.object__item {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.object__item textarea {
+  padding: 10px;
+  font-family: "Montserrat-Medium";
+  font-size: 16px;
+  outline: none;
+  transition: 0.4s;
+  border: 2px solid #b8b8b8;
+  width: 98%;
+}
+
+.object__item select {
+  font-family: "Montserrat-Medium";
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
+}
+
+.object__item select option {
+  word-break: break-all;
+}
+
+.object__item textarea:focus {
+  border-color: #0064d9;
+}
+
+.object__controls {
+  display: flex;
+  margin-left: auto;
+  gap: 15px;
+}
+
+.object__table {
+  margin: 0px 30px 40px;
+}
+.object__table > .table {
+  margin: 0px;
+  width: 100%;
+}
+
+.object__table > .table td {
+  font-size: 14px;
+}

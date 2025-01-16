@@ -66,3 +66,6 @@
 .header__modal a:hover {
   color: #0064d9;
 }
+.header__modal a:nth-child(3):hover {
+  color: red;
+}

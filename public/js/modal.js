@@ -3,12 +3,18 @@ function toggleModal() {
   if (modal) {
     if (!modal.classList.contains("header__modal--open")) {
       modal.classList.add("header__modal--open");
-      console.log("Modal opened:", modal);
     } else {
       modal.classList.remove("header__modal--open");
-      console.log("Modal closed:", modal);
     }
   }
+}
+
+function showModal(modal) {
+  modal.style.display = "flex";
+}
+
+function hideModal(modal) {
+  modal.style.display = "none";
 }
 
 document.addEventListener("click", function (event) {

@@ -1,0 +1,53 @@
+.profile {
+  margin: 40px 30px;
+}
+.profile__info {
+  margin: 40px 0px;
+  display: flex;
+  gap: 40px;
+}
+.profile__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid #b4b4b4;
+  box-shadow: 5px 5px 3px 0px rgba(0, 0, 0, 0.25);
+  width: 25%;
+}
+
+.profile__card > p > span {
+  font-family: "Montserrat-Bold";
+}
+
+.profile__controls {
+  display: flex;
+  gap: 20px;
+}
+
+.profile__controls a {
+  padding: 20px;
+  color: #fff;
+  font-family: "Montserrat-Bold";
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 3px 0px rgba(0, 0, 0, 0.25);
+  transition: 0.4s;
+}
+
+.profile__controls a:nth-child(1) {
+  background-color: #0064d9;
+}
+.profile__controls a:nth-child(2) {
+  background-color: red;
+}
+
+.profile__controls a:nth-child(1):hover {
+  background-color: #002b5d;
+}
+.profile__controls a:nth-child(2):hover {
+  background-color: rgb(91, 1, 1);
+}

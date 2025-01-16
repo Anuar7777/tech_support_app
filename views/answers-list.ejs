@@ -5,44 +5,77 @@
     <%- include('partials/header') %>
     <section class="list">
       <div class="list__controls">
-        <h3>Ответы (15)</h3>
-        <form class="search">
-          <input type="text" name="search" placeholder="Поиск" />
-          <a href="">Найти</a>
+        <h3>Ответы (<%= answers.length %>)</h3>
+        <form class="search" method="get" action="/answers">
+          <input
+            type="text"
+            name="search"
+            placeholder="Поиск"
+            value="<%= typeof search !== 'undefined' ? search : '' %>"
+          />
+          <button type="submit">Найти</button>
         </form>
         <div class="list__button">
-          <a href="">Создать</a>
-          <a href="">Удалить</a>
-          <a href=""><i class="fa-solid fa-file-arrow-down"></i></a>
+          <a href="/new/answer"><i class="fa-solid fa-file-circle-plus"></i></a>
+          <a  href="/api/export/answers?search=<%= search %>">
+            <i class="fa-solid fa-file-arrow-down"></i
+          ></a>
         </div>
       </div>
       <table class="table">
-        <tr class="table__title">
-          <th><input type="checkbox" class="table__checkbox" /></th>
-          <th>Ответы</th>
-          <th>Изменено</th>
-          <th>Дата изменения</th>
-          <th>Создано</th>
-          <th>Дата создания</th>
-        </tr>
         <tr>
-          <td><input type="checkbox" class="table__checkbox" /></td>
-          <td>Ответ: Решения по инцидентам смотрите в системе SOP.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>18 нояб. 2024 г.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>17 нояб. 2024 г.</td>
+          <th
+            class="table__title <%= sortBy === `answer` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/answers?search=<%= search %>&sortBy=answer&order=<%= (sortBy === 'answer' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Ответ
+          </th>
+          <th
+            class="table__title <%= sortBy === `modifier.email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/answers?search=<%= search %>&sortBy=modifier.email&order=<%= (sortBy === 'modifier.email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Изменено
+          </th>
+          <th
+            class="table__title <%= sortBy === `modified_at` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/answers?search=<%= search %>&sortBy=modified_at&order=<%= (sortBy === 'modified_at' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Дата изменения
+          </th>
+          <th
+            class="table__title <%= sortBy === `creator.email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/answers?search=<%= search %>&sortBy=creator.email&order=<%= (sortBy === 'creator.email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Создано
+          </th>
+          <th
+            class="table__title <%= sortBy === `created_at` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/answers?search=<%= search %>&sortBy=created_at&order=<%= (sortBy === 'created_at' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Дата создания
+          </th>
         </tr>
-        <tr>
-          <td><input type="checkbox" class="table__checkbox" /></td>
-          <td>Ответ: Решения по инцидентам смотрите в системе SOP.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>18 нояб. 2024 г.</td>
-          <td>aman_anuar@mail.ru</td>
-          <td>17 нояб. 2024 г.</td>
+        <% answers.forEach(answer => { %>
+        <tr
+          onclick="redirectToPage('/answer/<%= answer.answer_id%>')"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/answer/<%= answer.answer_id%>"
+        >
+          <td class="table__content"><%= answer.answer %></td>
+          <td><%= answer.modifier.email %></td>
+          <td class="table__date">
+            <%= new Date(answer.modified_at).toLocaleDateString('ru-RU', { day:
+            'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
+          <td><%= answer.creator.email %></td>
+          <td class="table__date">
+            <%= new Date(answer.created_at).toLocaleDateString('ru-RU', { day:
+            'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
         </tr>
+        <% }) %>
       </table>
     </section>
-    <%- include('partials/script') %>
+    <%- include('partials/context-menu') %> <%- include('partials/script') %>
   </body>
 </html>

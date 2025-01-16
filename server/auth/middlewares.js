@@ -19,4 +19,16 @@ const isAuth = (req, res, next) => {
   }
 };
 
-module.exports = { isAuth };
+const isValidate = (req, res, next) => {
+  if (req.user.isValidate) {
+    next();
+  } else {
+    res.status(401).render("error", {
+      pageTitle: "Упс...",
+      error: "Доступ запрещен",
+      status: 401,
+    });
+  }
+};
+
+module.exports = { isAuth, isValidate };

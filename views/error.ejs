@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body style="height: 100vh">
+    <%- include('partials/header') %>
+    <section class="error">
+      <img src="image/error.png" alt="error_image" />
+      <h1 class="error__status">Ошибка <%= status%></h1>
+      <h3 class="error__description"><%= error%></h3>
+      <a href="/" class="error__link">Назад на главную страницу</a>
+    </section>
+
+    <%- include('partials/script') %>
+  </body>
+</html>

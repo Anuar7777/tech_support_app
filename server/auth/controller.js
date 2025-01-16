@@ -25,7 +25,12 @@ const signUp = async (req, res) => {
     });
 
     const token = jwt.sign(
-      { userId: newUser.user_id, email: newUser.email },
+      {
+        userId: newUser.user_id,
+        email: newUser.email,
+        role: newUser.role,
+        isValidate: newUser.isValidate,
+      },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -67,9 +72,13 @@ const signIn = async (req, res) => {
       });
       return res.redirect("/login");
     }
-
     const token = jwt.sign(
-      { userId: user.user_id, email: user.email },
+      {
+        userId: user.user_id,
+        email: user.email,
+        role: user.role,
+        isValidate: user.isValidate,
+      },
       JWT_SECRET,
       { expiresIn: "2h" }
     );
@@ -81,7 +90,7 @@ const signIn = async (req, res) => {
 
     res.redirect("/");
   } catch (error) {
-    res.cookie("error", "Ошибка авторизации.", {
+    res.cookie("error", "Ошибка со стороны сервера", {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
     });
