@@ -28,8 +28,9 @@
             month: 'short', year: 'numeric' }) %>
           </p>
           <p>
-            <span>Статус аккаунта:</span> <%= user.isValidate ? "активный" :
-            "заблокирован" %>
+            <span>Дата изменения:</span> <%= new
+            Date(user.updatedAt).toLocaleDateString('ru-RU', { day: 'numeric',
+            month: 'short', year: 'numeric' }) %>
           </p>
         </div>
         <div class="profile__card">
@@ -39,10 +40,42 @@
           <p><span>Изменено ответов:</span> <%= updated_answer_count %></p>
         </div>
       </div>
+      <% if (currentUser.user_id == user.user_id || currentUser.user_id == 1) {
+      %>
       <div class="profile__controls">
-        <a onclick="showModal(changePassword_modal)">Сменить пароль</a>
-        <a onclick="showModal(deleteUser_modal)">Удалить аккаунт</a>
+        <a
+          onclick="showModal(changePassword_modal)"
+          class="profile__controls--up"
+        >
+          Сменить пароль
+        </a>
+
+        <% if (currentUser.user_id !== 1) { %>
+        <a
+          onclick="showModal(deleteUser_modal)"
+          class="profile__controls--down"
+        >
+          Удалить аккаунт
+        </a>
+        <% } else { %> <% if (user.role == "support") { %>
+        <a
+          href="#"
+          class="profile__controls--down"
+          onclick="changeRole(`<%= user.user_id %>`)"
+        >
+          Понизить Роль
+        </a>
+        <% } else if (user.role == "guest") { %>
+        <a
+          href="#"
+          class="profile__controls--up"
+          onclick="changeRole(`<%= user.user_id %>`)"
+        >
+          Повысить Роль
+        </a>
+        <% } %> <% } %>
       </div>
+      <% } %>
       <div
         id="deleteUser_modal"
         class="modal__window"
@@ -70,7 +103,7 @@
               onclick="hideModal(changePassword_modal)"
             ></i>
             <legend>Сменить пароль</legend>
-
+            <input type="hidden" name="user_id" value="<%= user.user_id%>" />
             <input
               type="password"
               placeholder="Введите новый пароль"

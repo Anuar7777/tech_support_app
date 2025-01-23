@@ -6,7 +6,7 @@
     <section class="home">
       <h3>Моя начальная страница</h3>
       <div class="home__container">
-        <% if (user.isValidate) { %>
+        <% if (user.role !== "guest") { %>
         <div
           class="home__item"
           oncontextmenu="showContextMenu(event, this)"
@@ -34,7 +34,7 @@
           data-href="/users"
           onclick="redirectToPage('/users')"
         >
-          <img src="image/home_item_users.png" alt="users" /> 
+          <img src="image/home_item_users.png" alt="users" />
           <h4>Пользователи</h4>
           <p>Работа с доступом</p>
         </div>

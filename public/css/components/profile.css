@@ -36,18 +36,22 @@
   border-radius: 10px;
   box-shadow: 5px 5px 3px 0px rgba(0, 0, 0, 0.25);
   transition: 0.4s;
+  min-width: 210px;
+  text-align: center;
 }
 
-.profile__controls a:nth-child(1) {
+.profile__controls--up {
   background-color: #0064d9;
 }
-.profile__controls a:nth-child(2) {
+
+.profile__controls--up:hover {
+  background-color: #002b5d;
+}
+
+.profile__controls--down {
   background-color: red;
 }
 
-.profile__controls a:nth-child(1):hover {
-  background-color: #002b5d;
-}
-.profile__controls a:nth-child(2):hover {
+.profile__controls--down:hover {
   background-color: rgb(91, 1, 1);
 }

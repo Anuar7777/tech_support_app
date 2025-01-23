@@ -2,6 +2,99 @@ const { Answer, Question, User } = require("./../../models");
 const { Op } = require("sequelize");
 const ExcelJS = require("exceljs");
 
+const exportUsers = async (req, res) => {
+  const { search } = req.query;
+  try {
+    const searchValue = search ? { email: { [Op.iLike]: `%${search}%` } } : {};
+
+    const users = await User.findAll({
+      where: searchValue,
+      attributes: ["user_id", "email", "role", "createdAt", "updatedAt"],
+      raw: true,
+    });
+
+    const enrichedUsers = await Promise.all(
+      users.map(async (user) => {
+        const [
+          createdQuestionCount,
+          updatedQuestionCount,
+          createdAnswerCount,
+          updatedAnswerCount,
+        ] = await Promise.all([
+          Question.count({ where: { created_by: user.user_id } }),
+          Question.count({ where: { modified_by: user.user_id } }),
+          Answer.count({ where: { created_by: user.user_id } }),
+          Answer.count({ where: { modified_by: user.user_id } }),
+        ]);
+
+        return {
+          ...user,
+          createdQuestionCount,
+          updatedQuestionCount,
+          createdAnswerCount,
+          updatedAnswerCount,
+        };
+      })
+    );
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Пользователи");
+
+    worksheet.columns = [
+      { header: "Email", key: "email", width: 30 },
+      { header: "Роль", key: "role", width: 20 },
+      { header: "Создано (Вопросы)", key: "createdQuestionCount", width: 20 },
+      { header: "Изменено (Вопросы)", key: "updatedQuestionCount", width: 20 },
+      { header: "Создано (Ответы)", key: "createdAnswerCount", width: 20 },
+      { header: "Изменено (Ответы)", key: "updatedAnswerCount", width: 20 },
+      { header: "Дата создания", key: "createdAt", width: 20 },
+      { header: "Дата изменения", key: "updatedAt", width: 20 },
+    ];
+
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { name: "Times New Roman", size: 12, bold: true };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFBFBFBF" },
+      };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    enrichedUsers.forEach((user) => {
+      const row = worksheet.addRow(user);
+      row.eachCell((cell) => {
+        cell.font = { name: "Times New Roman", size: 12 };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", `attachment; filename="users.xlsx"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Ошибка экспорта пользователей:", error);
+    res.status(500).json({ error: "Ошибка экспорта пользователей" });
+  }
+};
+
 const exportAnswers = async (req, res) => {
   const { search } = req.query;
   try {
@@ -292,4 +385,5 @@ const exportQuestions = async (req, res) => {
 module.exports = {
   exportAnswers,
   exportQuestions,
+  exportUsers,
 };

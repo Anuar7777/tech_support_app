@@ -34,6 +34,28 @@ router.get("/questions", isAuth, isValidate, async (req, res) => {
   try {
     const { search, sortBy, order } = req.query;
 
+    const validOrder = ["ASC", "DESC"];
+    const validSortBy = [
+      "question",
+      "answer",
+      "modifier.email",
+      "modified_at",
+      "creator.email",
+      "created_at",
+    ];
+
+    if (
+      sortBy &&
+      (!validOrder.includes(order) || !validSortBy.includes(sortBy))
+    ) {
+      return res.status(404).render("error", {
+        error: "Что-то не так с параметрами сортировки. Попробуйте снова.",
+        pageTitle: "Упс...",
+        status: 404,
+        user: req.user,
+      });
+    }
+
     const sortOptions = [
       [Sequelize.col(sortBy || "modified_at"), order || "DESC"],
     ];
@@ -72,6 +94,7 @@ router.get("/questions", isAuth, isValidate, async (req, res) => {
       search,
       sortBy,
       order,
+      user: req.user,
     });
   } catch (error) {
     console.error("Ошибка при загрузке ответа:", error);
@@ -79,6 +102,7 @@ router.get("/questions", isAuth, isValidate, async (req, res) => {
       error: "Ошибка сервера: " + error,
       pageTitle: "Упс...",
       status: 500,
+      user: req.user,
     });
   }
 });
@@ -107,8 +131,9 @@ router.get("/question/:id", isAuth, isValidate, async (req, res) => {
     if (!question) {
       return res.status(404).render("error", {
         pageTitle: "Упс...",
-        error: "Страница не найдена",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
         status: 404,
+        user: req.user,
       });
     }
 
@@ -133,12 +158,16 @@ router.get("/question/:id", isAuth, isValidate, async (req, res) => {
       pageTitle: "Общая Информация",
       question,
       answers,
+      user: req.user,
     });
   } catch (error) {
     console.error("Ошибка при загрузке вопроса: ", error);
-    res
-      .status(500)
-      .render("error", { pageTitle: "Упс...", error: error, status: 500 });
+    res.status(500).render("error", {
+      pageTitle: "Упс...",
+      error: error,
+      status: 500,
+      user: req.user,
+    });
   }
 });
 
@@ -146,6 +175,27 @@ router.get("/question/:id", isAuth, isValidate, async (req, res) => {
 router.get("/answers", isAuth, isValidate, async (req, res) => {
   try {
     const { search, sortBy, order } = req.query;
+
+    const validOrder = ["ASC", "DESC"];
+    const validSortBy = [
+      "answer",
+      "modifier.email",
+      "modified_at",
+      "creator.email",
+      "created_at",
+    ];
+
+    if (
+      sortBy &&
+      (!validOrder.includes(order) || !validSortBy.includes(sortBy))
+    ) {
+      return res.status(404).render("error", {
+        error: "Что-то не так с параметрами сортировки. Попробуйте снова.",
+        pageTitle: "Упс...",
+        status: 404,
+        user: req.user,
+      });
+    }
 
     const search_value = search
       ? { answer: { [Op.iLike]: `%${search}%` } }
@@ -174,12 +224,17 @@ router.get("/answers", isAuth, isValidate, async (req, res) => {
       nest: true,
     });
 
+    const error = req.cookies.error || null;
+    res.clearCookie("error");
+
     res.render("answers-list", {
       pageTitle: "Таблица Ответов",
       answers,
       search,
       sortBy,
       order,
+      user: req.user,
+      error,
     });
   } catch (error) {
     console.error("Ошибка при загрузке ответа:", error);
@@ -187,6 +242,7 @@ router.get("/answers", isAuth, isValidate, async (req, res) => {
       error: "Ошибка сервера: " + error,
       pageTitle: "Упс...",
       status: 500,
+      user: req.user,
     });
   }
 });
@@ -213,8 +269,9 @@ router.get("/answer/:id", isAuth, isValidate, async (req, res) => {
     if (!answer) {
       return res.status(404).render("error", {
         pageTitle: "Упс...",
-        error: "Страница не найдена",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
         status: 404,
+        user: req.user,
       });
     }
 
@@ -240,12 +297,16 @@ router.get("/answer/:id", isAuth, isValidate, async (req, res) => {
       pageTitle: "Общая Информация",
       answer,
       questions,
+      user: req.user,
     });
   } catch (error) {
     console.error("Ошибка при загрузке ответа:", error);
-    res
-      .status(500)
-      .render("error", { error: error, pageTitle: "Упс...", status: 500 });
+    res.status(500).render("error", {
+      error: error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 });
 
@@ -258,6 +319,7 @@ router.get("/new/answer", isAuth, isValidate, async (req, res) => {
     type: "answer",
     edit_mode: false,
     error,
+    user: req.user,
   });
 });
 
@@ -272,8 +334,9 @@ router.get("/edit/answer/:id", isAuth, isValidate, async (req, res) => {
     if (!answer) {
       return res.status(404).render("error", {
         pageTitle: "Упс...",
-        error: "Страница не найдена",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
         status: 404,
+        user: req.user,
       });
     }
 
@@ -285,12 +348,16 @@ router.get("/edit/answer/:id", isAuth, isValidate, async (req, res) => {
       edit_mode: true,
       error,
       answer,
+      user: req.user,
     });
   } catch (error) {
     console.error("Ошибка при загрузке ответа:", error);
-    res
-      .status(500)
-      .render("error", { error: error, pageTitle: "Упс...", status: 500 });
+    res.status(500).render("error", {
+      error: error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 });
 
@@ -303,6 +370,7 @@ router.get("/new/question", isAuth, isValidate, async (req, res) => {
     type: "question",
     edit_mode: false,
     error,
+    user: req.user,
   });
 });
 
@@ -318,15 +386,14 @@ router.get("/edit/question/:id", isAuth, isValidate, async (req, res) => {
     if (!question) {
       return res.status(404).render("error", {
         pageTitle: "Упс...",
-        error: "Страница не найдена",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
         status: 404,
+        user: req.user,
       });
     }
 
     const error = req.cookies.error || null;
     res.clearCookie("error");
-
-    console.log(question);
 
     res.render("work-form", {
       pageTitle: "Редактирование вопроса",
@@ -334,44 +401,155 @@ router.get("/edit/question/:id", isAuth, isValidate, async (req, res) => {
       edit_mode: true,
       error,
       question,
+      user: req.user,
     });
   } catch (error) {
     console.error("Ошибка при загрузке вопроса:", error);
-    res
-      .status(500)
-      .render("error", { error: error, pageTitle: "Упс...", status: 500 });
+    res.status(500).render("error", {
+      error: error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
+  }
+});
+
+// Страница пользователей (List)
+router.get("/users", isAuth, isValidate, async (req, res) => {
+  try {
+    const { search, sortBy, order } = req.query;
+
+    const validOrder = ["ASC", "DESC"];
+    const validSortBy = [
+      "email",
+      "role",
+      "created_question_count",
+      "updated_question_count",
+      "created_answer_count",
+      "updated_answer_count",
+    ];
+
+    if (
+      sortBy &&
+      (!validOrder.includes(order) || !validSortBy.includes(sortBy))
+    ) {
+      return res.status(404).render("error", {
+        error: "Что-то не так с параметрами сортировки. Попробуйте снова.",
+        pageTitle: "Упс...",
+        status: 404,
+        user: req.user,
+      });
+    }
+
+    const search_value = search ? { email: { [Op.iLike]: `%${search}%` } } : {};
+
+    const initial_users = await User.findAll({
+      where: search_value,
+      attributes: { exclude: ["password_hash", "updatedAt", "createdAt"] },
+      raw: true,
+      nest: true,
+    });
+
+    const users = await Promise.all(
+      initial_users.map(async (user) => {
+        const [
+          created_question_count,
+          updated_question_count,
+          created_answer_count,
+          updated_answer_count,
+        ] = await Promise.all([
+          Question.count({ where: { created_by: user.user_id } }),
+          Question.count({ where: { modified_by: user.user_id } }),
+          Answer.count({ where: { created_by: user.user_id } }),
+          Answer.count({ where: { modified_by: user.user_id } }),
+        ]);
+
+        return {
+          ...user,
+          created_question_count,
+          updated_question_count,
+          created_answer_count,
+          updated_answer_count,
+        };
+      })
+    );
+
+    if (sortBy) {
+      users.sort((a, b) => {
+        if (order === "DESC") {
+          return typeof a[sortBy] === "string"
+            ? b[sortBy].localeCompare(a[sortBy])
+            : b[sortBy] - a[sortBy];
+        }
+        return typeof a[sortBy] === "string"
+          ? a[sortBy].localeCompare(b[sortBy])
+          : a[sortBy] - b[sortBy];
+      });
+    }
+
+    res.render("users-list", {
+      pageTitle: "Таблица Пользователей",
+      users,
+      search,
+      sortBy,
+      order,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Ошибка при загрузке ответа:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 });
 
 // Страница профиля
-router.get("/profile", isAuth, async (req, res) => {
+router.get("/user/:id", isAuth, async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.userId);
+    const currentUser = req.user;
 
-    if (!user) {
-      throw new Error("Пользователь не найден");
+    if (req.params.id != currentUser.user_id && currentUser.role !== "admin") {
+      return res.status(403).render("error", {
+        pageTitle: "Упс...",
+        error: "Похоже, вы заблудились. Вернитесь на правильный путь!",
+        status: 403,
+        user: req.user,
+      });
     }
 
-    const updated_question_count = await Question.count({
-      where: { modified_by: req.user.userId },
-    });
-    const updated_answer_count = await Answer.count({
-      where: { modified_by: req.user.userId },
-    });
-    const created_question_count = await Question.count({
-      where: { created_by: req.user.userId },
-    });
-    const created_answer_count = await Answer.count({
-      where: { created_by: req.user.userId },
-    });
+    const user = await User.findByPk(req.params.id);
+
+    if (!user) {
+      return res.status(404).render("error", {
+        pageTitle: "Упс...",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
+        status: 404,
+        user: req.user,
+      });
+    }
+
+    const [
+      updated_question_count,
+      updated_answer_count,
+      created_question_count,
+      created_answer_count,
+    ] = await Promise.all([
+      Question.count({ where: { modified_by: user.user_id } }),
+      Answer.count({ where: { modified_by: user.user_id } }),
+      Question.count({ where: { created_by: user.user_id } }),
+      Answer.count({ where: { created_by: user.user_id } }),
+    ]);
 
     const error = req.cookies.error || null;
     const success = req.cookies.success || null;
     res.clearCookie("error");
     res.clearCookie("success");
 
-    res.render("profile", {
-      pageTitle: "Мой Профиль",
+    return res.render("user-object", {
+      pageTitle: "Карточка Пользователя",
       user: user.dataValues,
       created_question_count,
       created_answer_count,
@@ -379,22 +557,25 @@ router.get("/profile", isAuth, async (req, res) => {
       updated_answer_count,
       error,
       success,
+      currentUser,
     });
   } catch (error) {
     console.error("Ошибка при загрузке профиля:", error);
-    res.status(500).render("error", {
+    return res.status(500).render("error", {
       pageTitle: "Упс...",
       error: "Не удалось загрузить профиль. Пожалуйста, попробуйте позже.",
       status: 500,
+      user: req.user,
     });
   }
 });
 
-router.use("*", (req, res) => {
+router.use("*", isAuth, (req, res) => {
   res.status(404).render("error", {
     pageTitle: "Упс...",
-    error: "Страница не найдена",
+    error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
     status: 404,
+    user: req.user,
   });
 });
 

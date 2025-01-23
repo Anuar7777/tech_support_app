@@ -9,10 +9,9 @@ module.exports = {
 
     return queryInterface.bulkInsert("users", [
       {
-        email: "admin@support.kz",
+        email: "support@support.kz",
         password_hash: hashedPassword1,
         role: "admin",
-        isValidate: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -20,15 +19,13 @@ module.exports = {
         email: "ayazhan@support.kz",
         password_hash: hashedPassword2,
         role: "support",
-        isValidate: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         email: "test@support.kz",
         password_hash: hashedPassword3,
-        role: "support",
-        isValidate: false,
+        role: "guest",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

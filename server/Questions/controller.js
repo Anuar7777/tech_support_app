@@ -4,7 +4,7 @@ const getVector = require("./../embeddingAPI/embedding");
 const createQuestion = async (req, res) => {
   try {
     const { answer_id, question } = req.body;
-    const currentUser = req.user.userId;
+    const currentUser = req.user.user_id;
 
     if (!answer_id || !question || !question.trim()) {
       res.cookie("error", "Некорректные данные", {
@@ -59,7 +59,7 @@ const createQuestion = async (req, res) => {
 
 const editQuestion = async (req, res) => {
   const question_id = req.params.id;
-  const currentUser = req.user.userId;
+  const currentUser = req.user.user_id;
 
   try {
     const { question, answer_id } = req.body;

@@ -38,9 +38,28 @@ function deleteLogic(id, type) {
     },
   })
     .then(() => {
-      window.location.href = `/${type}s`;
+      window.location.href = `/${type}s?error=true`;
     })
     .catch((error) => {
       console.log("Ошибка при удалении: ", error.message);
     });
+}
+
+async function changeRole(userId) {
+  try {
+    const response = await fetch("/api/changeRole", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: userId }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка при изменении роли");
+    }
+
+    location.reload();
+  } catch (error) {
+    console.error(error.message);
+    alert("Произошла ошибка. Попробуйте снова.");
+  }
 }

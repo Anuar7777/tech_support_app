@@ -27,11 +27,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "support",
       },
-      isValidate: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
     },
     {
       sequelize,

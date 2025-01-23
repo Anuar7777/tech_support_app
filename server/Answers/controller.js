@@ -3,7 +3,7 @@ const { Answer } = require("../../models");
 const createAnswer = async (req, res) => {
   try {
     const answer = req.body.answer;
-    const currentUser = req.user.userId;
+    const currentUser = req.user.user_id;
 
     if (!answer || !answer.trim()) {
       res.cookie("error", "Ответ пуст", {
@@ -34,7 +34,7 @@ const createAnswer = async (req, res) => {
 
 const editAnswer = async (req, res) => {
   const answer_id = req.params.id;
-  const currentUser = req.user.userId;
+  const currentUser = req.user.user_id;
 
   try {
     const answer = req.body.answer;
@@ -53,7 +53,7 @@ const editAnswer = async (req, res) => {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
-      return res.redirect("/answers");
+      return res.redirect("/answers?error=true");
     }
 
     await Answer.update(
@@ -88,7 +88,7 @@ const deleteAnswer = async (req, res) => {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
-      return res.redirect("/answers");
+      return res.redirect("/answers?error=true");
     }
 
     await answer.destroy();
@@ -100,7 +100,7 @@ const deleteAnswer = async (req, res) => {
       maxAge: 10 * 60 * 1000,
     });
     console.log(error.message);
-    return res.redirect("/answers");
+    return res.redirect("/answers?error=true");
   }
 };
 

@@ -4,6 +4,7 @@
     "password": "root",
     "database": "support_db",
     "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   }
 }

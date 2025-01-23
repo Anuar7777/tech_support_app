@@ -1,9 +1,9 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const router = express.Router();
-const { isAuth } = require("./middlewares");
+const { isAuth, isAdmin } = require("./middlewares");
 const { signUp, signIn, signOut } = require("./controller");
-const { deleteUser, changePassword } = require("./profile");
+const { deleteUser, changePassword, changeRole } = require("./profile");
 
 router.post(
   "/signUp",
@@ -76,10 +76,12 @@ router.post(
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
-      return res.redirect("/profile?error=true");
+      return res.redirect(`/user/${req.user.user_id}?error=true`);
     }
     await changePassword(req, res);
   }
 );
+
+router.post("/changeRole", isAuth, isAdmin, changeRole);
 
 module.exports = router;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("partials/head")%>
+  <body>
+    <%- include("partials/header")%>
+    <section class="list">
+      <div class="list__controls">
+        <h3>Пользователи (<%= users.length %>)</h3>
+        <form class="search" method="get" action="/users">
+          <input
+            type="text"
+            name="search"
+            placeholder="Поиск"
+            value="<%= typeof search !== 'undefined' ? search : '' %>"
+          />
+          <button type="submit">Найти</button>
+        </form>
+        <div class="list__button">
+          <a href="/api/export/users?search=<%= search %>">
+            <i class="fa-solid fa-file-arrow-down"></i
+          ></a>
+        </div>
+      </div>
+      <table class="table">
+        <tr>
+          <th
+            class="table__title <%= sortBy === `email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=email&order=<%= (sortBy === 'email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Email
+          </th>
+          <th
+            class="table__title <%= sortBy === `role` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=role&order=<%= (sortBy === 'role' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Роль
+          </th>
+          <th
+            class="table__title <%= sortBy === `created_question_count` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=created_question_count&order=<%= (sortBy === 'created_question_count' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Создано (Вопросы)
+          </th>
+          <th
+            class="table__title <%= sortBy === `updated_question_count` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=updated_question_count&order=<%= (sortBy === 'updated_question_count' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Изменено (Вопросы)
+          </th>
+          <th
+            class="table__title <%= sortBy === `created_answer_count` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=created_answer_count&order=<%= (sortBy === 'created_answer_count' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Создано (Ответы)
+          </th>
+          <th
+            class="table__title <%= sortBy === `updated_answer_count` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=updated_answer_count&order=<%= (sortBy === 'updated_answer_count' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Изменено (Ответы)
+          </th>
+        </tr>
+        <% users.forEach(user => { %>
+        <tr
+          onclick="redirectToPage('/user/<%= user.user_id%>')"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/user/<%= user.user_id%>"
+        >
+          <td><%= user.email %></td>
+          <td><%= user.role %></td>
+          <td><%= user.created_question_count %></td>
+          <td><%= user.updated_question_count %></td>
+          <td><%= user.created_answer_count %></td>
+          <td><%= user.updated_answer_count %></td>
+        </tr>
+        <% }) %>
+      </table>
+    </section>
+
+    <%- include("partials/context-menu") %> <%- include("partials/script")%>
+  </body>
+</html>

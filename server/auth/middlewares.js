@@ -20,15 +20,29 @@ const isAuth = (req, res, next) => {
 };
 
 const isValidate = (req, res, next) => {
-  if (req.user.isValidate) {
+  if (req.user.role !== "guest") {
     next();
   } else {
-    res.status(401).render("error", {
+    res.status(403).render("error", {
       pageTitle: "Упс...",
-      error: "Доступ запрещен",
-      status: 401,
+      error: "Похоже, вы заблудились. Вернитесь на правильный путь!",
+      status: 403,
+      user: req.user,
     });
   }
 };
 
-module.exports = { isAuth, isValidate };
+const isAdmin = (req, res, next) => {
+  if (req.user.role == "admin") {
+    next();
+  } else {
+    res.status(403).render("error", {
+      pageTitle: "Упс...",
+      error: "Похоже, вы заблудились. Вернитесь на правильный путь!",
+      status: 403,
+      user: req.user,
+    });
+  }
+};
+
+module.exports = { isAuth, isValidate, isAdmin };
