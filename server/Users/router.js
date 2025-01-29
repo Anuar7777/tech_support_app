@@ -2,7 +2,7 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const router = express.Router();
 const { isAuth, isAdmin } = require("./middlewares");
-const { signUp, signIn, signOut } = require("./controller");
+const { signUp, signIn, signOut } = require("./auth");
 const { deleteUser, changePassword, changeRole } = require("./profile");
 
 router.post(

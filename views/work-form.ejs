@@ -20,37 +20,81 @@
             cols="100"
             rows="10"
           >
-<%= edit_mode ? answer.answer : "" %></textarea
+<%= edit_mode ? answer.answer : "" %>
+</textarea
           >
           <div class="object__controls">
             <% if (error) { %>
             <p style="color: red"><%= error %></p>
             <% } %>
             <button type="submit" class="button">Сохранить</button>
-            <a
-              href="<%= edit_mode ? '/answer/' + answer.answer_id : '/answers'%>"
-              class="button"
-              >Назад</a
-            >
+            <a href="/answers" class="button">Назад</a>
           </div>
         </form>
         <% } else if (type == "question") { %>
-        <form class="object__item" method="post" action="/api/question/new">
+        <form
+          class="object__item"
+          method="post"
+          action="<%= edit_mode ? `/api/question/edit/${question.question_id}` : `/api/question/new` %>"
+        >
           <h4>Ответ:</h4>
-
+          <% if(Object.keys(answers).length > 0) { %>
+          <select name="answer_id" style="width: 100%">
+            <% answers.forEach(answer => { %>
+            <option value="<%= answer.answer_id %>">
+              <%= answer.answer %>
+            </option>
+            <% }) %>
+          </select>
+          <% }else{ %>
+          <h4>Нету доступных ответов</h4>
+          <a href="/new/answer" class="object__link"
+            >Перейти к созданию ответа</a
+          >
+          <% } %>
           <h4>Вопрос:</h4>
           <textarea
             name="question"
             placeholder="Введите текст..."
             cols="100"
             rows="10"
-          ><%= edit_mode ? question.question : ""%></textarea>
+          >
+<%= edit_mode ? question.question : ""%></textarea
+          >
           <div class="object__controls">
             <% if (error) { %>
             <p style="color: red"><%= error %></p>
             <% } %>
             <button type="submit" class="button">Сохранить</button>
             <a href="/questions" class="button">Назад</a>
+          </div>
+        </form>
+        <% } else if (type == "query") { %>
+        <form class="object__item" method="post" action="/api/query/send">
+          <input type="hidden" name="query_id" value="<%= query.query_id %>" />
+          <input
+            type="hidden"
+            name="created_by"
+            value="<%= query.created_by %>"
+          />
+          <input type="hidden" name="query" value="<%= query.query %>" />
+          <h4>Запрос пользователя: <span><%= query.query %></span></h4>
+          <h4>Ответ:</h4>
+          <textarea
+            name="answer"
+            placeholder="Введите текст..."
+            cols="100"
+            rows="10"
+          >
+<%= query.support_answer %>
+</textarea
+          >
+          <div class="object__controls">
+            <% if (error) { %>
+            <p style="color: red"><%= error %></p>
+            <% } %>
+            <button type="submit" class="button">Сохранить</button>
+            <a href="/queries" class="button">Назад</a>
           </div>
         </form>
         <% } %>

@@ -3,7 +3,13 @@ const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {}
+    static associate(models) {
+      this.hasMany(models.Message, {
+        foreignKey: "user_id",
+        as: "messages",
+        onDelete: "CASCADE",
+      });
+    }
   }
 
   User.init(
@@ -25,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       role: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "support",
+        defaultValue: "guest",
       },
     },
     {

@@ -6,17 +6,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.User, {
         foreignKey: "created_by",
-        as: "creator", 
+        as: "creator",
       });
 
       this.belongsTo(models.User, {
-        foreignKey: "modified_by", 
-        as: "modifier", 
+        foreignKey: "modified_by",
+        as: "modifier",
       });
 
       this.hasMany(models.Question, {
-        foreignKey: "answer_id", 
-        as: "questions", 
+        foreignKey: "answer_id",
+        as: "questions",
+        onDelete: "CASCADE",
       });
     }
   }
@@ -39,18 +40,18 @@ module.exports = (sequelize, DataTypes) => {
       created_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", 
+          model: "Users",
           key: "user_id",
         },
       },
       modified_at: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW, 
+        defaultValue: DataTypes.NOW,
       },
       modified_by: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", 
+          model: "Users",
           key: "user_id",
         },
       },
@@ -58,8 +59,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Answer",
-      tableName: "answers", 
-      timestamps: false, 
+      tableName: "answers",
+      timestamps: false,
     }
   );
 

@@ -111,12 +111,12 @@ module.exports = {
           model: "answers",
           key: "answer_id",
         },
+        onDelete: "CASCADE",
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Удаление таблиц, если миграция откатывается
     await queryInterface.dropTable("questions");
     await queryInterface.dropTable("answers");
     await queryInterface.dropTable("users");

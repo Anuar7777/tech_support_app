@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/header') %>
+    <section class="chat">
+      <section class="chat__main">
+        <% messages.forEach(message => { %> <% if (message.type === 'response')
+        { %>
+        <div class="chat__message chat__message--bot">
+          <img src="/image/chat_icon.png" alt="icon" class="chat__avatar" />
+          <div class="chat__content--bot">
+            <p class="chat__name">Платон</p>
+            <p class="chat__text"><%= message.text %></p>
+            <p class="chat__date chat__date--bot">
+              <%= new Date(message.date).toLocaleString("ru-RU", { year:
+              "numeric", month: "2-digit", day: "2-digit", hour: "2-digit",
+              minute: "2-digit" }).replace(',', '') %>
+            </p>
+          </div>
+        </div>
+        <% } else { %>
+        <div class="chat__message chat__message--user">
+          <p class="chat__text"><%= message.text %></p>
+          <p class="chat__date">
+            <%= new Date(message.date).toLocaleString("ru-RU", { year:
+            "numeric", month: "2-digit", day: "2-digit", hour: "2-digit",
+            minute: "2-digit" }).replace(',', '') %>
+          </p>
+        </div>
+        <% } %> <% }); %>
+      </section>
+      <form class="chat__form" action="/api/chat/send" method="POST">
+        <input type="hidden" value="<%= user.user_id %>" name="chat_id" />
+        <input
+          type="text"
+          class="chat__input"
+          name="text"
+          placeholder="Введите сообщение..."
+          autocomplete="off"
+        />
+        <button type="submit" class="chat__submit">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </section>
+
+    <%- include('partials/script') %>
+  </body>
+</html>

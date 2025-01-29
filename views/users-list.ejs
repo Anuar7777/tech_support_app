@@ -36,6 +36,12 @@
             Роль
           </th>
           <th
+            class="table__title <%= sortBy === `closed_queries_count` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/users?search=<%= search %>&sortBy=closed_queries_count&order=<%= (sortBy === 'closed_queries_count' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Выполнено (Запросы)
+          </th>
+          <th
             class="table__title <%= sortBy === `created_question_count` ? `table__title--selected` : `` %>"
             onclick="redirectToPage(`/users?search=<%= search %>&sortBy=created_question_count&order=<%= (sortBy === 'created_question_count' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
           >
@@ -68,6 +74,7 @@
         >
           <td><%= user.email %></td>
           <td><%= user.role %></td>
+          <td><%= user.closed_queries_count %></td>
           <td><%= user.created_question_count %></td>
           <td><%= user.updated_question_count %></td>
           <td><%= user.created_answer_count %></td>

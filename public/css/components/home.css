@@ -31,4 +31,6 @@
 
 .home__item > * {
   margin-bottom: 15px;
+  text-align: center;
+  line-height: 125%;
 }

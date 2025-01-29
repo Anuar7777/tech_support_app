@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User } = require("./../../models");
+const { User } = require("../../models");
 
 const JWT_SECRET = process.env.JWT_SECRET || "my_secret_key";
 
@@ -88,7 +88,7 @@ const signIn = async (req, res) => {
 
     res.redirect("/");
   } catch (error) {
-    res.cookie("error", "Ошибка со стороны сервера", {
+    res.cookie("error", "Сервер в спячке. Попробуйте снова", {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
     });

@@ -1,6 +1,6 @@
 const express = require("express");
-const { isAuth, isValidate } = require("../auth/middlewares");
-const { User, Question, Answer } = require("./../../models");
+const { isAuth, isValidate } = require("../Users/middlewares");
+const { Query, User, Question, Answer, Message } = require("./../../models");
 const { Op, Sequelize } = require("sequelize");
 const { raw } = require("body-parser");
 const router = express.Router();
@@ -29,6 +29,224 @@ router.get("/login", (req, res) => {
   res.render("login", { pageTitle: "Авторизация", error, newUser: false });
 });
 
+// Страница чата
+router.get("/chat/:id", isAuth, async (req, res) => {
+  const chat_id = req.params.id;
+
+  if (req.user.user_id != chat_id) {
+    return res.status(403).render("error", {
+      pageTitle: "Упс...",
+      error: "Похоже, вы заблудились. Вернитесь на правильный путь!",
+      status: 403,
+      user: req.user,
+    });
+  }
+
+  try {
+    const messageCount = await Message.count({
+      where: { user_id: chat_id },
+    });
+
+    if (messageCount === 0) {
+      await Message.create({
+        user_id: chat_id,
+        text: "Здраствуйте! Отправьте подробное описание вашей проблемы.",
+        date: new Date(),
+        type: "response",
+      });
+    }
+
+    const messages = await Message.findAll({
+      where: { user_id: chat_id },
+      order: [["date", "DESC"]],
+      limit: 15,
+      raw: true,
+      nest: true,
+    });
+
+    res.render("chat", {
+      pageTitle: "Поддержка Platonus",
+      messages,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Ошибка при загрузке чата:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
+  }
+});
+
+// Страница запросов (Queries)
+router.get("/queries", isAuth, isValidate, async (req, res) => {
+  try {
+    const { search, sortBy, order } = req.query;
+
+    const validOrder = ["ASC", "DESC"];
+    const validSortBy = [
+      "query",
+      "createdByUser.email",
+      "created_at",
+      "closedByUser.email",
+      "closed_at",
+    ];
+
+    if (
+      sortBy &&
+      (!validOrder.includes(order) || !validSortBy.includes(sortBy))
+    ) {
+      return res.status(404).render("error", {
+        error:
+          "Ого, вы явно мастер обходных путей! Но так менять параметры сортировки нельзя🙃",
+        pageTitle: "Упс...",
+        status: 404,
+        user: req.user,
+      });
+    }
+
+    const sortOptions = [
+      [Sequelize.col(sortBy || "created_at"), order || "DESC"],
+    ];
+
+    const search_value = search ? { query: { [Op.iLike]: `%${search}%` } } : {};
+
+    const queries = await Query.findAll({
+      where: search_value,
+      attributes: {
+        exclude: [
+          "support_answer",
+          "pred_question",
+          "similarity",
+          "created_by",
+        ],
+      },
+      include: [
+        {
+          model: User,
+          as: "createdByUser",
+          attributes: ["email"],
+          required: false,
+        },
+        {
+          model: User,
+          as: "closedByUser",
+          attributes: ["email"],
+          required: false,
+        },
+      ],
+      order: sortOptions,
+      raw: true,
+      nest: true,
+    });
+
+    res.render("queries-list", {
+      pageTitle: "Таблица Запросов",
+      queries,
+      search,
+      sortBy,
+      order,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Ошибка при загрузке запросов:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
+  }
+});
+
+// Страница запроса (Object)
+router.get("/query/:id", isAuth, isValidate, async (req, res) => {
+  try {
+    const query = await Query.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "createdByUser",
+          attributes: ["email"],
+          required: false,
+        },
+        {
+          model: User,
+          as: "closedByUser",
+          attributes: ["email"],
+          required: false,
+        },
+      ],
+      raw: true,
+      nest: true,
+    });
+
+    if (!query) {
+      return res.status(404).render("error", {
+        pageTitle: "Упс...",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
+        status: 404,
+        user: req.user,
+      });
+    }
+
+    res.render("query-object", {
+      pageTitle: "Карточка Запроса",
+      query,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Ошибка при загрузке запроса: ", error);
+    res.status(500).render("error", {
+      pageTitle: "Упс...",
+      error: error,
+      status: 500,
+      user: req.user,
+    });
+  }
+});
+
+// Редактирование запроса
+router.get("/edit/query/:id", isAuth, isValidate, async (req, res) => {
+  try {
+    const query = await Query.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+    });
+
+    if (!query) {
+      return res.status(404).render("error", {
+        pageTitle: "Упс...",
+        error: "Ой, тут пусто! Похоже, страница ушла в отпуск!",
+        status: 404,
+        user: req.user,
+      });
+    }
+
+    const error = req.cookies.error || null;
+    res.clearCookie("error");
+
+    res.render("work-form", {
+      pageTitle: "Редактирование ответа",
+      type: "query",
+      edit_mode: true,
+      error,
+      query,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Ошибка при загрузке запроса:", error);
+    res.status(500).render("error", {
+      error: error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
+  }
+});
+
 // Страница вопросов (List)
 router.get("/questions", isAuth, isValidate, async (req, res) => {
   try {
@@ -49,7 +267,8 @@ router.get("/questions", isAuth, isValidate, async (req, res) => {
       (!validOrder.includes(order) || !validSortBy.includes(sortBy))
     ) {
       return res.status(404).render("error", {
-        error: "Что-то не так с параметрами сортировки. Попробуйте снова.",
+        error:
+          "Ого, вы явно мастер обходных путей! Но так менять параметры сортировки нельзя🙃",
         pageTitle: "Упс...",
         status: 404,
         user: req.user,
@@ -63,6 +282,7 @@ router.get("/questions", isAuth, isValidate, async (req, res) => {
     const search_value = search
       ? { question: { [Op.iLike]: `%${search}%` } }
       : {};
+
     const questions = await Question.findAll({
       where: search_value,
       attributes: { exclude: ["question_vector"] },
@@ -97,7 +317,7 @@ router.get("/questions", isAuth, isValidate, async (req, res) => {
       user: req.user,
     });
   } catch (error) {
-    console.error("Ошибка при загрузке ответа:", error);
+    console.error("Ошибка при загрузке вопросов:", error);
     res.status(500).render("error", {
       error: "Ошибка сервера: " + error,
       pageTitle: "Упс...",
@@ -155,7 +375,7 @@ router.get("/question/:id", isAuth, isValidate, async (req, res) => {
       nest: true,
     });
     res.render("question-object", {
-      pageTitle: "Общая Информация",
+      pageTitle: "Карточка Вопроса",
       question,
       answers,
       user: req.user,
@@ -190,7 +410,8 @@ router.get("/answers", isAuth, isValidate, async (req, res) => {
       (!validOrder.includes(order) || !validSortBy.includes(sortBy))
     ) {
       return res.status(404).render("error", {
-        error: "Что-то не так с параметрами сортировки. Попробуйте снова.",
+        error:
+          "Ого, вы явно мастер обходных путей! Но так менять параметры сортировки нельзя🙃",
         pageTitle: "Упс...",
         status: 404,
         user: req.user,
@@ -237,7 +458,7 @@ router.get("/answers", isAuth, isValidate, async (req, res) => {
       error,
     });
   } catch (error) {
-    console.error("Ошибка при загрузке ответа:", error);
+    console.error("Ошибка при загрузке ответов:", error);
     res.status(500).render("error", {
       error: "Ошибка сервера: " + error,
       pageTitle: "Упс...",
@@ -294,7 +515,7 @@ router.get("/answer/:id", isAuth, isValidate, async (req, res) => {
       nest: true,
     });
     res.render("answer-object", {
-      pageTitle: "Общая Информация",
+      pageTitle: "Карточка Ответа",
       answer,
       questions,
       user: req.user,
@@ -365,12 +586,28 @@ router.get("/edit/answer/:id", isAuth, isValidate, async (req, res) => {
 router.get("/new/question", isAuth, isValidate, async (req, res) => {
   const error = req.cookies.error || null;
   res.clearCookie("error");
+
+  const answers = await Answer.findAll({
+    attributes: {
+      exclude: ["created_at", "created_by", "modified_at", "modified_by"],
+    },
+    raw: true,
+    nest: true,
+  });
+
+  answers.forEach((answer) => {
+    if (answer.answer && answer.answer.length > 120) {
+      answer.answer = answer.answer.slice(0, 120) + "...";
+    }
+  });
+
   res.render("work-form", {
     pageTitle: "Новый Вопрос",
     type: "question",
     edit_mode: false,
     error,
     user: req.user,
+    answers,
   });
 });
 
@@ -392,6 +629,20 @@ router.get("/edit/question/:id", isAuth, isValidate, async (req, res) => {
       });
     }
 
+    const answers = await Answer.findAll({
+      attributes: {
+        exclude: ["created_at", "created_by", "modified_at", "modified_by"],
+      },
+      raw: true,
+      nest: true,
+    });
+
+    answers.forEach((answer) => {
+      if (answer.answer && answer.answer.length > 120) {
+        answer.answer = answer.answer.slice(0, 120) + "...";
+      }
+    });
+
     const error = req.cookies.error || null;
     res.clearCookie("error");
 
@@ -402,6 +653,7 @@ router.get("/edit/question/:id", isAuth, isValidate, async (req, res) => {
       error,
       question,
       user: req.user,
+      answers,
     });
   } catch (error) {
     console.error("Ошибка при загрузке вопроса:", error);
@@ -423,6 +675,7 @@ router.get("/users", isAuth, isValidate, async (req, res) => {
     const validSortBy = [
       "email",
       "role",
+      "closed_queries_count",
       "created_question_count",
       "updated_question_count",
       "created_answer_count",
@@ -434,7 +687,8 @@ router.get("/users", isAuth, isValidate, async (req, res) => {
       (!validOrder.includes(order) || !validSortBy.includes(sortBy))
     ) {
       return res.status(404).render("error", {
-        error: "Что-то не так с параметрами сортировки. Попробуйте снова.",
+        error:
+          "Ого, вы явно мастер обходных путей! Но так менять параметры сортировки нельзя🙃",
         pageTitle: "Упс...",
         status: 404,
         user: req.user,
@@ -453,11 +707,13 @@ router.get("/users", isAuth, isValidate, async (req, res) => {
     const users = await Promise.all(
       initial_users.map(async (user) => {
         const [
+          closed_queries_count,
           created_question_count,
           updated_question_count,
           created_answer_count,
           updated_answer_count,
         ] = await Promise.all([
+          Query.count({ where: { closed_by: user.user_id } }),
           Question.count({ where: { created_by: user.user_id } }),
           Question.count({ where: { modified_by: user.user_id } }),
           Answer.count({ where: { created_by: user.user_id } }),
@@ -466,6 +722,7 @@ router.get("/users", isAuth, isValidate, async (req, res) => {
 
         return {
           ...user,
+          closed_queries_count,
           created_question_count,
           updated_question_count,
           created_answer_count,
@@ -496,7 +753,7 @@ router.get("/users", isAuth, isValidate, async (req, res) => {
       user: req.user,
     });
   } catch (error) {
-    console.error("Ошибка при загрузке ответа:", error);
+    console.error("Ошибка при загрузке пользователей:", error);
     res.status(500).render("error", {
       error: "Ошибка сервера: " + error,
       pageTitle: "Упс...",

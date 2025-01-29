@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { createAnswer, editAnswer, deleteAnswer } = require("./controller");
-const { isAuth, isValidate } = require("../auth/middlewares");
+const { isAuth, isValidate } = require("../Users/middlewares");
 
 router.post("/new", isAuth, isValidate, createAnswer);
 router.post("/edit/:id", isAuth, isValidate, editAnswer);

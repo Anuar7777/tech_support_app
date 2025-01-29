@@ -9,7 +9,7 @@
         <a href="/edit/answer/<%= answer.answer_id %>"
           ><i class="fa-solid fa-pen"></i
         ></a>
-        <a onclick="deleteLogic('<%= answer.answer_id %>', 'answer')"
+        <a onclick="showModal(deleteAnswer_modal)"
           ><i class="fa-solid fa-trash"></i
         ></a>
       </div>
@@ -69,7 +69,29 @@
         <% }) %>
       </table>
     </section>
-    <% } %> <%- include('partials/context-menu') %> <%-
-    include('partials/script') %>
+    <% } %>
+
+    <div
+      id="deleteAnswer_modal"
+      class="modal__window"
+      onclick="hideModal(deleteAnswer_modal)"
+    >
+      <div class="modal__content" onclick="event.stopPropagation()">
+        <h3>Вы точно хотите удалить ответ?</h3>
+        <p>(Все связанные вопросы будут удалены)</p>
+        <div class="modal__controls">
+          <a
+            class="modal__button"
+            onclick="deleteLogic('<%= answer.answer_id %>', 'answer')"
+            >Да</a
+          >
+          <a class="modal__button" onclick="hideModal(deleteAnswer_modal)"
+            >Нет</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/context-menu') %> <%- include('partials/script') %>
   </body>
 </html>

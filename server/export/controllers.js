@@ -1,6 +1,105 @@
-const { Answer, Question, User } = require("./../../models");
+const { Query, Answer, Question, User } = require("./../../models");
 const { Op } = require("sequelize");
 const ExcelJS = require("exceljs");
+
+const exportQueries = async (req, res) => {
+  const { search } = req.query;
+  try {
+    const searchCondition = search
+      ? {
+          query: {
+            [Op.iLike]: `%${search}%`,
+          },
+        }
+      : {};
+
+    const queries = await Query.findAll({
+      where: searchCondition,
+      include: [
+        {
+          model: User,
+          as: "createdByUser",
+          attributes: ["email"],
+        },
+        {
+          model: User,
+          as: "closedByUser",
+          attributes: ["email"],
+        },
+      ],
+      raw: true,
+    });
+
+    const processedQueries = queries.map((query) => ({
+      ...query,
+      "createdByUser.email": query["createdByUser.email"] || "Аккаунт удален",
+      closed_at: query.closed_at || "Ожидает обработки",
+      "closedByUser.email": query["closedByUser.email"] || "Ожидает обработки",
+    }));
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Запросы");
+
+    worksheet.columns = [
+      { header: "ID", key: "query_id", width: 10 },
+      { header: "Запрос пользователя", key: "query", width: 50 },
+      { header: "Ответ поддержки", key: "support_answer", width: 50 },
+      { header: "Похожий вопрос", key: "pred_question", width: 50 },
+      { header: "Схожесть", key: "similarity", width: 15 },
+      { header: "Дата создания", key: "created_at", width: 20 },
+      { header: "Создано", key: "createdByUser.email", width: 30 },
+      { header: "Дата выполнения", key: "closed_at", width: 20 },
+      { header: "Выполнено", key: "closedByUser.email", width: 30 },
+    ];
+
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { name: "Times New Roman", size: 12, bold: true };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFBFBFBF" },
+      };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    processedQueries.forEach((query) => {
+      const row = worksheet.addRow(query);
+      row.eachCell((cell) => {
+        cell.font = { name: "Times New Roman", size: 12 };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", `attachment; filename="queries.xlsx"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Ошибка при экспорте запросов:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
+  }
+};
 
 const exportUsers = async (req, res) => {
   const { search } = req.query;
@@ -16,11 +115,13 @@ const exportUsers = async (req, res) => {
     const enrichedUsers = await Promise.all(
       users.map(async (user) => {
         const [
+          closedQueriesCount,
           createdQuestionCount,
           updatedQuestionCount,
           createdAnswerCount,
           updatedAnswerCount,
         ] = await Promise.all([
+          Query.count({ where: { closed_by: user.user_id } }),
           Question.count({ where: { created_by: user.user_id } }),
           Question.count({ where: { modified_by: user.user_id } }),
           Answer.count({ where: { created_by: user.user_id } }),
@@ -29,6 +130,7 @@ const exportUsers = async (req, res) => {
 
         return {
           ...user,
+          closedQueriesCount,
           createdQuestionCount,
           updatedQuestionCount,
           createdAnswerCount,
@@ -43,10 +145,11 @@ const exportUsers = async (req, res) => {
     worksheet.columns = [
       { header: "Email", key: "email", width: 30 },
       { header: "Роль", key: "role", width: 20 },
-      { header: "Создано (Вопросы)", key: "createdQuestionCount", width: 20 },
-      { header: "Изменено (Вопросы)", key: "updatedQuestionCount", width: 20 },
-      { header: "Создано (Ответы)", key: "createdAnswerCount", width: 20 },
-      { header: "Изменено (Ответы)", key: "updatedAnswerCount", width: 20 },
+      { header: "Выполнено (Запросы)", key: "closedQueriesCount", width: 30 },
+      { header: "Создано (Вопросы)", key: "createdQuestionCount", width: 30 },
+      { header: "Изменено (Вопросы)", key: "updatedQuestionCount", width: 30 },
+      { header: "Создано (Ответы)", key: "createdAnswerCount", width: 30 },
+      { header: "Изменено (Ответы)", key: "updatedAnswerCount", width: 30 },
       { header: "Дата создания", key: "createdAt", width: 20 },
       { header: "Дата изменения", key: "updatedAt", width: 20 },
     ];
@@ -90,8 +193,13 @@ const exportUsers = async (req, res) => {
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {
-    console.error("Ошибка экспорта пользователей:", error);
-    res.status(500).json({ error: "Ошибка экспорта пользователей" });
+    console.error("Ошибка при экспорте данных:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 };
 
@@ -262,8 +370,13 @@ const exportAnswers = async (req, res) => {
     const buffer = await workbook.xlsx.writeBuffer();
     res.send(buffer);
   } catch (error) {
-    console.error("Ошибка при экспорте ответов: ", error);
-    res.status(500).json({ message: "Ошибка при экспорте ответов" });
+    console.error("Ошибка при экспорте данных:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 };
 
@@ -377,8 +490,13 @@ const exportQuestions = async (req, res) => {
     const buffer = await workbook.xlsx.writeBuffer();
     res.send(buffer);
   } catch (error) {
-    console.error("Ошибка при экспорте вопросов: ", error);
-    res.status(500).json({ message: "Ошибка при экспорте вопросов" });
+    console.error("Ошибка при экспорте данных:", error);
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 };
 
@@ -386,4 +504,5 @@ module.exports = {
   exportAnswers,
   exportQuestions,
   exportUsers,
+  exportQueries,
 };

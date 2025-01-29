@@ -1,0 +1,112 @@
+.chat {
+  height: 80vh;
+}
+
+.chat__main {
+  background-color: #fff;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column-reverse;
+  height: 75%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  max-width: 80%;
+  gap: 10px;
+}
+
+.chat__message {
+  display: flex;
+  align-items: flex-start;
+  max-width: 100%;
+  border-radius: 15px;
+  gap: 10px;
+}
+
+.chat__message--user {
+  background-color: #0064d9;
+  color: #fff;
+  margin-left: auto;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.chat__message--bot {
+  margin-right: auto;
+}
+
+.chat__content--bot {
+  background-color: #f2f2f7;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid #b8b8b8;
+}
+
+.chat__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.chat__name {
+  font-family: "Montserrat-Bold";
+  font-size: 14px;
+  margin: 0;
+  color: #333;
+}
+
+.chat__text {
+  font-size: 14px;
+  margin: 5px 0;
+  line-height: 125%;
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.chat__date {
+  font-size: 12px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.chat__date--bot {
+  color: #999;
+}
+
+.chat__form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  max-width: 83%;
+  margin: 0px auto 20px;
+}
+
+.chat__input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #b8b8b8;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.chat__input:focus {
+  border-color: #0064d9;
+}
+
+.chat__submit {
+  padding: 10px 20px;
+  background-color: #0064d9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.chat__submit:hover {
+  background-color: #004fb7;
+}

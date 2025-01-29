@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
-const { User } = require("./../../models");
+const { Query, User, Answer, Question } = require("../../models");
+const { Op } = require("sequelize");
 
 const changePassword = async (req, res) => {
   try {
@@ -94,6 +95,40 @@ const deleteUser = async (req, res) => {
         .json({ error: "Нельзя удалять главного администратора!" });
     }
 
+    const updates = [
+      {
+        model: Answer,
+        fields: { modified_by: 1 },
+        condition: { modified_by: user.user_id },
+      },
+      {
+        model: Answer,
+        fields: { created_by: 1 },
+        condition: { created_by: user.user_id },
+      },
+      {
+        model: Question,
+        fields: { created_by: 1 },
+        condition: { created_by: user.user_id },
+      },
+      {
+        model: Question,
+        fields: { modified_by: 1 },
+        condition: { modified_by: user.user_id },
+      },
+      {
+        model: Query,
+        fields: { closed_by: 1 },
+        condition: { closed_by: user.user_id },
+      },
+    ];
+
+    await Promise.all(
+      updates.map(({ model, fields, condition }) =>
+        model.update(fields, { where: condition })
+      )
+    );
+
     await user.destroy();
     console.log(`Пользователь с ID ${req.user.user_id} удалён`);
     res.clearCookie("token");
@@ -101,7 +136,12 @@ const deleteUser = async (req, res) => {
     res.status(200).json({ message: "Пользователь успешно удалён" });
   } catch (err) {
     console.error("Ошибка при удалении пользователя:", err);
-    res.status(500).json({ error: "Ошибка сервера при удалении пользователя" });
+    res.status(500).render("error", {
+      error: "Ошибка сервера: " + error,
+      pageTitle: "Упс...",
+      status: 500,
+      user: req.user,
+    });
   }
 };
 

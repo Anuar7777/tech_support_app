@@ -63,3 +63,25 @@ async function changeRole(userId) {
     alert("Произошла ошибка. Попробуйте снова.");
   }
 }
+
+function saveQuery(query_id) {
+  fetch(`/api/query/save/${query_id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Запрос успешно сохранен");
+      } else {
+        throw new Error("Ошибка при сохранении запроса");
+      }
+    })
+    .catch((error) => {
+      console.error("Ошибка:", error);
+    })
+    .finally(() => {
+      window.location.href = "/queries";
+    });
+}

@@ -61,6 +61,16 @@
   border-color: #0064d9;
 }
 
+.object__link {
+  color: #0064d9;
+  transition: 0.3s;
+  font-family: "Montserrat-Bold";
+}
+
+.object__link:hover {
+  color: #002b5d;
+}
+
 .object__controls {
   display: flex;
   margin-left: auto;

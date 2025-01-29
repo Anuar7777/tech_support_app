@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/header') %>
+    <section class="object">
+      <div class="object__title">
+        <h3>Общая Информация</h3>
+        <% if(query.closedByUser.email) { %>
+        <a onclick="saveQuery(`<%= query.query_id %>`)">
+          <i class="fa-solid fa-bookmark"></i>
+        </a>
+        <% }else { %>
+        <a href="/edit/query/<%= query.query_id %>">
+          <i class="fa-solid fa-pen"></i>
+        </a>
+        <% } %>
+      </div>
+
+      <div class="object__container">
+        <div class="object__item">
+          <h4>
+            Создано: <% if (query.createdByUser.email) {%>
+            <span><%= query.createdByUser.email%></span>
+            <% }else { %>
+            <span>Аккаунт удален</span>
+            <% }%>
+          </h4>
+          <h4>
+            Выполнено: <% if(query.closedByUser.email) { %>
+            <span><%= query.closedByUser.email %></span>
+            <% } else {%>
+            <span style="color: red">Ожидает обработки</span>
+            <% } %>
+          </h4>
+        </div>
+        <div class="object__item">
+          <h4>
+            Дата создания:
+            <span>
+              <%= new Date(query.created_at).toLocaleDateString('ru-RU', { day:
+              'numeric', month: 'short', year: 'numeric' }) %></span
+            >
+          </h4>
+          <h4>
+            Дата выполнения: <% if(query.closed_at) { %>
+            <span>
+              <%= new Date(query.closed_at).toLocaleDateString('ru-RU', { day:
+              'numeric', month: 'short', year: 'numeric' }) %>
+            </span>
+            <% }else{ %>
+            <span style="color: red">Ожидает обработки</span>
+            <% } %>
+          </h4>
+        </div>
+      </div>
+
+      <div class="object__container">
+        <div class="object__item">
+          <h4>Запрос пользователя: <span><%= query.query %></span></h4>
+          <% if(query.closedByUser.email) { %>
+          <h4>
+            Ответ поддержки:
+            <span><%= query.support_answer%></span>
+          </h4>
+          <% } else { %>
+          <h4>
+            Предпологаемый ответ:
+            <span><%= query.support_answer%></span>
+          </h4>
+          <% } %>
+        </div>
+      </div>
+    </section>
+    <%- include('partials/script') %>
+  </body>
+</html>

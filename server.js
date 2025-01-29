@@ -12,10 +12,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/api", require("./server/auth/router"));
+app.use("/api", require("./server/Users/router"));
 app.use("/api/answer", require("./server/Answers/router"));
 app.use("/api/question", require("./server/Questions/router"));
 app.use("/api/export", require("./server/export/router"));
+app.use("/api/chat", require("./server/Messages/router"));
+app.use("/api/query", require("./server/Queries/router"));
 app.use(require("./server/pages/router"));
 
 const port = 3000;

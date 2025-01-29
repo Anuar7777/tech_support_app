@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("partials/head") %>
+  <body>
+    <%- include("partials/header") %>
+
+    <section class="list">
+      <div class="list__controls">
+        <h3>Запросы (<%= queries.length %>)</h3>
+        <form class="search" method="get" action="/queries">
+          <input
+            type="text"
+            name="search"
+            placeholder="Поиск"
+            value="<%= typeof search !== 'undefined' ? search : '' %>"
+          />
+          <button type="submit">Найти</button>
+        </form>
+        <div class="list__button">
+          <a href="/api/export/queries?search=<%= search %>">
+            <i class="fa-solid fa-file-arrow-down"></i>
+          </a>
+        </div>
+      </div>
+
+      <table class="table">
+        <tr>
+          <th
+            class="table__title <%= sortBy === `query` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/queries?search=<%= search %>&sortBy=query&order=<%= (sortBy === 'query' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Запрос
+          </th>
+          <th
+            class="table__title <%= sortBy === `createdByUser.email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/queries?search=<%= search %>&sortBy=createdByUser.email&order=<%= (sortBy === 'createdByUser.email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Создано
+          </th>
+          <th
+            class="table__title <%= sortBy === `created_at` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/queries?search=<%= search %>&sortBy=created_at&order=<%= (sortBy === 'created_at' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Дата создания
+          </th>
+          <th
+            class="table__title <%= sortBy === `closedByUser.email` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/queries?search=<%= search %>&sortBy=closedByUser.email&order=<%= (sortBy === 'closedByUser.email' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Выполнено
+          </th>
+          <th
+            class="table__title <%= sortBy === `closed_at` ? `table__title--selected` : `` %>"
+            onclick="redirectToPage(`/queries?search=<%= search %>&sortBy=closed_at&order=<%= (sortBy === 'closed_at' && order === 'ASC') ? 'DESC' : 'ASC' %>`)"
+          >
+            Дата выполнения
+          </th>
+        </tr>
+        <% queries.forEach( query => { %>
+        <tr
+          onclick="redirectToPage('/query/<%= query.query_id%>')"
+          oncontextmenu="showContextMenu(event, this)"
+          data-href="/query/<%= query.query_id%>"
+        >
+          <td class="table__content"><%= query.query %></td>
+          <% if(query.createdByUser.email) { %>
+          <td><%= query.createdByUser.email %></td>
+          <% }else{ %>
+          <td style="color: red">Аккаунт удален</td>
+          <% } %>
+          <td class="table__date">
+            <%= new Date(query.created_at).toLocaleDateString('ru-RU', { day:
+            'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
+          <% if(query.closed_at) { %>
+          <td><%= query.closedByUser.email %></td>
+          <td class="table__date">
+            <%= new Date(query.closed_at).toLocaleDateString('ru-RU', { day:
+            'numeric', month: 'short', year: 'numeric' }) %>
+          </td>
+          <% }else{ %>
+          <td style="color: red">Ожидает обработки</td>
+          <td style="color: red">Ожидает обработки</td>
+          <% } %>
+        </tr>
+        <% }) %>
+      </table>
+    </section>
+    <%- include("partials/context-menu") %> <%- include("partials/script") %>
+  </body>
+</html>

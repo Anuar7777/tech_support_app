@@ -7,7 +7,7 @@ const createQuestion = async (req, res) => {
     const currentUser = req.user.user_id;
 
     if (!answer_id || !question || !question.trim()) {
-      res.cookie("error", "Некорректные данные", {
+      res.cookie("error", "Отсутствует ответ или вопрос", {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
@@ -38,7 +38,7 @@ const createQuestion = async (req, res) => {
 
     await Question.create({
       question: question.trim(),
-      answer_id,
+      answer_id: answer_id,
       question_vector,
       created_at: new Date(),
       created_by: currentUser,
