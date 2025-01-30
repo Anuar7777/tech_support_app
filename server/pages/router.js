@@ -17,15 +17,15 @@ router.get("/", isAuth, async (req, res) => {
 
 // Страница регистрации
 router.get("/register", (req, res) => {
-  const error = req.cookies.error || null;
-  res.clearCookie("error");
+  const error = req.cookies.auth_error || null;
+  res.clearCookie("auth_error");
   res.render("login", { pageTitle: "Регистрация", error, newUser: true });
 });
 
 // Страница авторизации
 router.get("/login", (req, res) => {
-  const error = req.cookies.error || null;
-  res.clearCookie("error");
+  const error = req.cookies.auth_error || null;
+  res.clearCookie("auth_error");
   res.render("login", { pageTitle: "Авторизация", error, newUser: false });
 });
 

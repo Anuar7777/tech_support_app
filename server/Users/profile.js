@@ -134,8 +134,8 @@ const deleteUser = async (req, res) => {
     res.clearCookie("token");
 
     res.status(200).json({ message: "Пользователь успешно удалён" });
-  } catch (err) {
-    console.error("Ошибка при удалении пользователя:", err);
+  } catch (error) {
+    console.error("Ошибка при удалении пользователя:", error);
     res.status(500).render("error", {
       error: "Ошибка сервера: " + error,
       pageTitle: "Упс...",

@@ -10,7 +10,7 @@ const signUp = async (req, res) => {
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
-      res.cookie("error", "Пользователь с таким email уже существует.", {
+      res.cookie("auth_error", "Пользователь с такой почтой уже существует.", {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
@@ -41,7 +41,7 @@ const signUp = async (req, res) => {
 
     res.redirect("/");
   } catch (error) {
-    res.cookie("error", "Ошибка регистрации", {
+    res.cookie("auth_error", "Ошибка регистрации", {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
     });
@@ -56,7 +56,7 @@ const signIn = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      res.cookie("error", "Неверный email или пароль", {
+      res.cookie("auth_error", "Неверный email или пароль", {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
@@ -65,7 +65,7 @@ const signIn = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
-      res.cookie("error", "Неверный email или пароль", {
+      res.cookie("auth_error", "Неверный email или пароль", {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });
@@ -88,7 +88,7 @@ const signIn = async (req, res) => {
 
     res.redirect("/");
   } catch (error) {
-    res.cookie("error", "Сервер в спячке. Попробуйте снова", {
+    res.cookie("auth_error", "Сервер в спячке. Попробуйте снова", {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
     });

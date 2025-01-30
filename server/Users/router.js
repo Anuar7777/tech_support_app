@@ -24,7 +24,7 @@ router.post(
 
     if (!errors.isEmpty()) {
       const firstError = errors.array()[0].msg;
-      res.cookie("error", firstError, {
+      res.cookie("auth_error", firstError, {
         httpOnly: true,
         maxAge: 10 * 60 * 1000,
       });

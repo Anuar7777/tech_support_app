@@ -76,28 +76,6 @@
         <% }) %>
       </table>
     </section>
-    <% if (error) { %>
-    <div
-      id="error_modal"
-      class="modal__window"
-      onclick="hideModal(error_modal)"
-    >
-      <div class="modal__content" onclick="event.stopPropagation()">
-        <h3><%= error %></h3>
-
-        <div class="modal__controls">
-          <a class="modal__button" onclick="hideModal(error_modal)">Ок</a>
-        </div>
-      </div>
-    </div>
-    <% } %> <%- include('partials/context-menu') %> <%-
-    include('partials/script') %>
-    <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const error = urlParams.get("error");
-      if (error) {
-        showModal(error_modal);
-      }
-    </script>
+    <%- include('partials/context-menu') %> <%- include('partials/script') %>
   </body>
 </html>

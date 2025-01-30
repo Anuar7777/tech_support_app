@@ -1,5 +1,5 @@
 const { Query, User, Message, Question, Answer } = require("../../models");
-const getVector = require("./../embeddingAPI/embedding");
+const getVector = require("./../EmbeddingAPI/embedding");
 
 const sendQuery = async (req, res) => {
   const { query_id, query, created_by, answer } = req.body;

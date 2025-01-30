@@ -1,5 +1,5 @@
 const { Question, Answer } = require("./../../models");
-const getVector = require("./../embeddingAPI/embedding");
+const getVector = require("./../EmbeddingAPI/embedding");
 
 const createQuestion = async (req, res) => {
   try {
